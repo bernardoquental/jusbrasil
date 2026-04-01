@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jus IA - Configuracao</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Farol DS tokens ──────────────────────────────────── */
+    :root {
+      --background:         #FFFFFF;
+      --foreground:         #0F172A;
+      --foreground-1:       #2B3950;
+      --primary:            #007A5F;
+      --primary-foreground: #FFFFFF;
+      --primary-1:          #E6F4F0;
+      --primary-3:          #00664F;
+      --muted:              #F1F5F9;
+      --muted-foreground:   #5C6F8A;
+      --border:             #E2E8F0;
+      --card-border:        #CCD5E1;
+
+      --shadow-1: 0px 2px 4px 0px rgba(25,52,102,0.04);
+      --shadow-2: 0px 2px 8px 0px rgba(25,52,102,0.08);
+
+      --ease-productive:  cubic-bezier(0,0,0.3,1);
+      --ease-expressive:  cubic-bezier(0.4,0.12,0.4,1);
+
+      --radius-xs: 6px;
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-pill: 500px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── BARRA DE PROGRESSO ──────────────────────────────── */
+    .progress-track {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--border);
+      z-index: 100;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      transition: width 320ms var(--ease-expressive);
+    }
+
+    /* ── BOTAO FECHAR ─────────────────────────────────────── */
+    .btn-close {
+      position: fixed;
+      top: 20px; right: 24px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--muted-foreground);
+      cursor: pointer;
+      transition: background 160ms var(--ease-productive),
+                  color 160ms var(--ease-productive);
+    }
+
+    .btn-close:hover {
+      background: var(--muted);
+      color: var(--foreground);
+    }
+
+    .btn-close svg { width: 20px; height: 20px; }
+
+    /* ── LAYOUT PRINCIPAL ─────────────────────────────────── */
+    .setup-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 80px 24px 100px;
+    }
+
+    .setup-container {
+      width: 100%;
+      max-width: 560px;
+    }
+
+    /* ── STEP (tela) ──────────────────────────────────────── */
+    .step {
+      display: none;
+      animation: fadeInRight 240ms var(--ease-expressive) forwards;
+    }
+
+    .step.active { display: block; }
+    .step.leaving {
+      animation: fadeOutLeft 160ms var(--ease-productive) forwards;
+      pointer-events: none;
+    }
+
+    @keyframes fadeInRight {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeOutLeft {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(-20px); }
+    }
+
+    /* ── TITULO ───────────────────────────────────────────── */
+    .step-title {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.3px;
+      color: var(--foreground);
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    /* ── OPCOES — cards com checkbox (steps 1,2,4) ────────── */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+
+    .option-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      background: var(--background);
+      cursor: pointer;
+      transition: border-color 160ms var(--ease-productive),
+                  background 160ms var(--ease-productive);
+      user-select: none;
+    }
+
+    .option-card:hover {
+      border-color: var(--card-border);
+      background: #FAFBFC;
+    }
+
+    .option-card.selected {
+      border-color: var(--primary);
+      background: var(--primary-1);
+    }
+
+    .option-icon {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      color: var(--muted-foreground);
+      transition: color 160ms var(--ease-productive);
+    }
+
+    .option-card.selected .option-icon { color: var(--primary); }
+    .option-icon svg { width: 20px; height: 20px; }
+
+    .option-label {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--foreground-1);
+      transition: color 160ms var(--ease-productive);
+    }
+
+    .option-card.selected .option-label { color: var(--foreground); }
+
+    /* checkbox customizado */
+    .option-check {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      border: 1.5px solid var(--card-border);
+      background: var(--background);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 160ms var(--ease-productive),
+                  background 160ms var(--ease-productive);
+    }
+
+    .option-card.selected .option-check {
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+
+    .option-check svg {
+      width: 12px;
+      height: 12px;
+      color: white;
+      opacity: 0;
+      transform: scale(0.6);
+      transition: opacity 120ms var(--ease-productive),
+                  transform 120ms var(--ease-productive);
+    }
+
+    .option-card.selected .option-check svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* ── OPCOES — pill chips (step 3) ─────────────────────── */
+    .chips-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 40px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      height: 36px;
+      padding: 0 16px;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid var(--border);
+      background: var(--background);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--foreground-1);
+      cursor: pointer;
+      transition: border-color 160ms var(--ease-productive),
+                  background 160ms var(--ease-productive),
+                  color 160ms var(--ease-productive);
+      user-select: none;
+    }
+
+    .chip:hover {
+      border-color: var(--card-border);
+    }
+
+    .chip.selected {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+
+    /* ── FORMULARIO OAB (step 5) ──────────────────────────── */
+    .oab-incentive {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--primary-1);
+      border: 1px solid #C9E9DF;
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin-bottom: 28px;
+    }
+
+    .oab-incentive-icon {
+      flex-shrink: 0;
+      color: var(--primary);
+      margin-top: 1px;
+    }
+
+    .oab-incentive-icon svg { width: 18px; height: 18px; }
+
+    .oab-incentive-text {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--primary-3);
+    }
+
+    .oab-incentive-text strong { font-weight: 600; }
+
+    .oab-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .form-group.numero { flex: 2; }
+    .form-group.estado { flex: 1.2; }
+    .form-group.tipo   { flex: 1.5; }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--foreground-1);
+    }
+
+    .form-input,
+    .form-select {
+      height: 40px;
+      padding: 0 12px;
+      border-radius: var(--radius-xs);
+      border: 1.5px solid var(--border);
+      background: var(--background);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--foreground);
+      outline: none;
+      transition: border-color 160ms var(--ease-productive),
+                  box-shadow 160ms var(--ease-productive);
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .form-input::placeholder { color: var(--muted-foreground); }
+
+    .form-input:focus,
+    .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0,122,95,0.12);
+    }
+
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper::after {
+      content: '';
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid var(--muted-foreground);
+      pointer-events: none;
+    }
+
+    .form-select { padding-right: 32px; cursor: pointer; }
+
+    /* ── BOTAO PROXIMO / CONTINUAR ─────────────────────────── */
+    .btn-next {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--primary-foreground);
+      cursor: pointer;
+      transition: background 160ms var(--ease-productive),
+                  opacity 160ms var(--ease-productive),
+                  transform 80ms var(--ease-productive);
+    }
+
+    .btn-next:hover:not(:disabled) { background: var(--primary-3); }
+    .btn-next:active:not(:disabled) { transform: scale(0.98); }
+
+    .btn-next:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ── LINK PULAR ────────────────────────────────────────── */
+    .skip-link {
+      display: block;
+      text-align: center;
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted-foreground);
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 160ms var(--ease-productive);
+    }
+
+    .skip-link:hover { color: var(--foreground); }
+
+    /* ── RESPONSIVO ────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .setup-page { padding: 64px 16px 80px; }
+      .step-title { font-size: 20px; }
+      .form-row { flex-direction: column; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Barra de progresso -->
+<div class="progress-track" aria-hidden="true">
+  <div class="progress-fill" id="progressFill"></div>
+</div>
+
+<!-- Botao fechar -->
+<button class="btn-close" id="btnClose" aria-label="Pular configuracao">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M18 6 6 18M6 6l12 12"/>
+  </svg>
+</button>
+
+<main class="setup-page">
+  <div class="setup-container">
+
+    <!-- ── STEP 1: Motivacao ───────────────────────────── -->
+    <section class="step" id="step-1" aria-label="Passo 1 de 5">
+      <h1 class="step-title">O que te traz ao Jus IA?</h1>
+
+      <div class="options-list" role="group" aria-label="Selecione seus objetivos">
+        <div class="option-card" data-step="1" data-value="estudos" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="option-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </span>
+          <span class="option-label">Auxiliar meus estudos e pesquisas academicas</span>
+          <span class="option-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+        </div>
+
+        <div class="option-card" data-step="1" data-value="produtividade" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="option-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </span>
+          <span class="option-label">Aumentar minha produtividade</span>
+          <span class="option-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+        </div>
+
+        <div class="option-card" data-step="1" data-value="pecas" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="option-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </span>
+          <span class="option-label">Melhorar a qualidade das minhas pecas</span>
+          <span class="option-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+        </div>
+
+        <div class="option-card" data-step="1" data-value="contratos" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="option-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </span>
+          <span class="option-label">Revisar documentos e contratos</span>
+          <span class="option-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+        </div>
+
+        <div class="option-card" data-step="1" data-value="explorando" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="option-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+          </span>
+          <span class="option-label">Estou apenas explorando</span>
+          <span class="option-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <button class="btn-next" id="btn-1" disabled>Proximo</button>
+    </section>
+
+    <!-- ── STEP 2: Necessidade ─────────────────────────── -->
+    <section class="step" id="step-2" aria-label="Passo 2 de 5">
+      <h1 class="step-title">Qual sua principal necessidade atualmente?</h1>
+
+      <div class="options-list" role="group" aria-label="Selecione sua necessidade">
+        <div class="option-card" data-step="2" data-value="analisar" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="option-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6M8 11h6"/></svg>
+          </span>
+          <span class="option-label">Analisar um processo ou documento</span>
+          <span class="option-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+        </div>
+
+        <div class="option-card" data-step="2" data-value="criar-peca" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="option-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          </span>
+          <span class="option-label">Criar ou revisar uma peca juridica</span>
+          <span class="option-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+        </div>
+
+        <div class="option-card" data-step="2" data-value="duvidas" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="option-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          </span>
+          <span class="option-label">Tirar duvidas juridicas</span>
+          <span class="option-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+        </div>
+
+        <div class="option-card" data-step="2" data-value="outras" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="option-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </span>
+          <span class="option-label">Outras atividades</span>
+          <span class="option-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <button class="btn-next" id="btn-2" disabled>Proximo</button>
+    </section>
+
+    <!-- ── STEP 3: Areas de atuacao ────────────────────── -->
+    <section class="step" id="step-3" aria-label="Passo 3 de 5">
+      <h1 class="step-title">Selecione as suas áreas de atuação</h1>
+
+      <div class="chips-grid" id="chips-3" role="group" aria-label="Selecione as areas">
+        <span class="chip" data-step="3" data-value="Internacional" tabindex="0" role="checkbox" aria-checked="false">Direito Internacional</span>
+        <span class="chip" data-step="3" data-value="Familia" tabindex="0" role="checkbox" aria-checked="false">Familia</span>
+        <span class="chip" data-step="3" data-value="Propriedade Intelectual" tabindex="0" role="checkbox" aria-checked="false">Propriedade Intelectual</span>
+        <span class="chip" data-step="3" data-value="Penal" tabindex="0" role="checkbox" aria-checked="false">Penal</span>
+        <span class="chip" data-step="3" data-value="Criminal" tabindex="0" role="checkbox" aria-checked="false">Criminal</span>
+        <span class="chip" data-step="3" data-value="Constitucional" tabindex="0" role="checkbox" aria-checked="false">Direito Constitucional</span>
+        <span class="chip" data-step="3" data-value="Tributario" tabindex="0" role="checkbox" aria-checked="false">Tributario</span>
+        <span class="chip" data-step="3" data-value="Trabalhista" tabindex="0" role="checkbox" aria-checked="false">Trabalhista</span>
+        <span class="chip" data-step="3" data-value="Ambiental" tabindex="0" role="checkbox" aria-checked="false">Ambiental</span>
+        <span class="chip" data-step="3" data-value="Consumidor" tabindex="0" role="checkbox" aria-checked="false">Consumidor</span>
+        <span class="chip" data-step="3" data-value="Desportivo" tabindex="0" role="checkbox" aria-checked="false">Direito Desportivo</span>
+        <span class="chip" data-step="3" data-value="Imobiliario" tabindex="0" role="checkbox" aria-checked="false">Imobiliario</span>
+        <span class="chip" data-step="3" data-value="Civil" tabindex="0" role="checkbox" aria-checked="false">Civil</span>
+        <span class="chip" data-step="3" data-value="Administrativo" tabindex="0" role="checkbox" aria-checked="false">Administrativo</span>
+        <span class="chip" data-step="3" data-value="Agrario" tabindex="0" role="checkbox" aria-checked="false">Direito Agrario</span>
+        <span class="chip" data-step="3" data-value="Processo Civil" tabindex="0" role="checkbox" aria-checked="false">Processo Civil</span>
+        <span class="chip" data-step="3" data-value="Empresarial" tabindex="0" role="checkbox" aria-checked="false">Empresarial</span>
+        <span class="chip" data-step="3" data-value="Eleitoral" tabindex="0" role="checkbox" aria-checked="false">Direito Eleitoral</span>
+        <span class="chip" data-step="3" data-value="Previdenciario" tabindex="0" role="checkbox" aria-checked="false">Previdenciario</span>
+        <span class="chip" data-step="3" data-value="Securitario" tabindex="0" role="checkbox" aria-checked="false">Direito Securitario</span>
+      </div>
+
+      <button class="btn-next" id="btn-3" disabled>Proximo</button>
+    </section>
+
+    <!-- ── STEP 4: Estilo de atuacao ───────────────────── -->
+    <section class="step" id="step-4" aria-label="Passo 4 de 5">
+      <h1 class="step-title">Como voce atua?</h1>
+
+      <div class="options-list" role="group" aria-label="Selecione seu estilo de atuacao">
+        <div class="option-card" data-step="4" data-value="contencioso" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="option-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          </span>
+          <span class="option-label">Contencioso - processos, peticoes, defesas</span>
+          <span class="option-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+        </div>
+
+        <div class="option-card" data-step="4" data-value="consultivo" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="option-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </span>
+          <span class="option-label">Consultivo - pareceres, contratos, compliance</span>
+          <span class="option-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+        </div>
+
+        <div class="option-card" data-step="4" data-value="ambos" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="option-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </span>
+          <span class="option-label">Atuo nas duas frentes</span>
+          <span class="option-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+        </div>
+
+        <div class="option-card" data-step="4" data-value="definindo" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="option-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          </span>
+          <span class="option-label">Ainda estou definindo</span>
+          <span class="option-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <button class="btn-next" id="btn-4" disabled>Proximo</button>
+    </section>
+
+    <!-- ── STEP 5: OAB ─────────────────────────────────── -->
+    <section class="step" id="step-5" aria-label="Passo 5 de 5">
+      <h1 class="step-title">Adicione sua OAB</h1>
+
+      <div class="oab-incentive" role="note">
+        <span class="oab-incentive-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
+        <p class="oab-incentive-text">
+          <strong>Respostas ainda mais precisas para voce.</strong> Com sua OAB, o Jus IA filtra jurisprudencia pela sua seccional, adapta a linguagem ao seu perfil e identifica restricoes relevantes para o seu caso.
+        </p>
+      </div>
+
+      <div class="oab-form">
+        <div class="form-row">
+          <div class="form-group numero">
+            <label class="form-label" for="oab-numero">Numero da OAB</label>
+            <input class="form-input" id="oab-numero" type="number" placeholder="Ex: 123456" min="1" inputmode="numeric" />
+          </div>
+
+          <div class="form-group estado">
+            <label class="form-label" for="oab-estado">Estado</label>
+            <div class="select-wrapper">
+              <select class="form-select" id="oab-estado">
+                <option value="">UF</option>
+                <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+                <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+                <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+                <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+                <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+                <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+                <option>SP</option><option>SE</option><option>TO</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group tipo">
+            <label class="form-label" for="oab-tipo">Tipo</label>
+            <div class="select-wrapper">
+              <select class="form-select" id="oab-tipo">
+                <option value="">Tipo</option>
+                <option value="Normal">Normal</option>
+                <option value="Estagiario">Estagiario</option>
+                <option value="Suplementar">Suplementar</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-next" id="btn-5">Continuar</button>
+      <a class="skip-link" id="skipOab" href="#">Pular esta etapa</a>
+    </section>
+
+  </div>
+</main>
+
+<!-- ── SCRIPT ─────────────────────────────────────────────── -->
+<script>
+  (() => {
+    const TOTAL_STEPS = 5;
+    const ANSWERS_KEY = 'jusIA_setupAnswers';
+    const STEP_KEY    = 'jusIA_setupStep';
+    const OAB_KEY     = 'jusIA_oab';
+
+    // ── Estado ────────────────────────────────────────────────
+    let currentStep = 1;
+    let answers = { step1: [], step2: [], step3: [], step4: [] };
+
+    // ── Elementos ─────────────────────────────────────────────
+    const progressFill = document.getElementById('progressFill');
+    const btnClose     = document.getElementById('btnClose');
+    const skipOab      = document.getElementById('skipOab');
+
+    // ── Progresso ─────────────────────────────────────────────
+    function updateProgress() {
+      progressFill.style.width = ((currentStep / TOTAL_STEPS) * 100) + '%';
+    }
+
+    // ── Navegacao entre steps ─────────────────────────────────
+    function goToStep(n, direction = 'forward') {
+      const current = document.getElementById('step-' + currentStep);
+      const next    = document.getElementById('step-' + n);
+      if (!next) return;
+
+      current.classList.remove('active');
+      if (direction === 'forward') {
+        current.classList.add('leaving');
+        setTimeout(() => current.classList.remove('leaving'), 160);
+      }
+
+      currentStep = n;
+      next.classList.add('active');
+      updateProgress();
+      saveState();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── Validacao de selecao ──────────────────────────────────
+    function validateStep(n) {
+      if (n === 5) return; // step 5 sempre habilitado
+      const key = 'step' + n;
+      const btn = document.getElementById('btn-' + n);
+      if (!btn) return;
+      btn.disabled = answers[key].length === 0;
+    }
+
+    // ── Toggle opcao (cards) ──────────────────────────────────
+    function toggleOption(el) {
+      const step  = el.dataset.step;
+      const value = el.dataset.value;
+      const key   = 'step' + step;
+      const idx   = answers[key].indexOf(value);
+
+      if (idx === -1) {
+        answers[key].push(value);
+        el.classList.add('selected');
+        el.setAttribute('aria-checked', 'true');
+      } else {
+        answers[key].splice(idx, 1);
+        el.classList.remove('selected');
+        el.setAttribute('aria-checked', 'false');
+      }
+      validateStep(parseInt(step));
+    }
+
+    // ── Toggle chip (step 3) ──────────────────────────────────
+    function toggleChip(el) {
+      const value = el.dataset.value;
+      const idx   = answers.step3.indexOf(value);
+
+      if (idx === -1) {
+        answers.step3.push(value);
+        el.classList.add('selected');
+        el.setAttribute('aria-checked', 'true');
+      } else {
+        answers.step3.splice(idx, 1);
+        el.classList.remove('selected');
+        el.setAttribute('aria-checked', 'false');
+      }
+      validateStep(3);
+    }
+
+    // ── Persistencia ──────────────────────────────────────────
+    function saveState() {
+      localStorage.setItem(ANSWERS_KEY, JSON.stringify(answers));
+      localStorage.setItem(STEP_KEY, currentStep);
+    }
+
+    function saveOab() {
+      const oab = {
+        numero: document.getElementById('oab-numero').value.trim(),
+        estado: document.getElementById('oab-estado').value,
+        tipo:   document.getElementById('oab-tipo').value,
+      };
+      localStorage.setItem(OAB_KEY, JSON.stringify(oab));
+    }
+
+    function restoreState() {
+      const saved     = localStorage.getItem(ANSWERS_KEY);
+      const savedStep = parseInt(localStorage.getItem(STEP_KEY)) || 1;
+      const savedOab  = localStorage.getItem(OAB_KEY);
+
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          answers = Object.assign(answers, parsed);
+        } catch (_) {}
+      }
+
+      if (savedOab) {
+        try {
+          const oab = JSON.parse(savedOab);
+          if (oab.numero) document.getElementById('oab-numero').value = oab.numero;
+          if (oab.estado) document.getElementById('oab-estado').value = oab.estado;
+          if (oab.tipo)   document.getElementById('oab-tipo').value   = oab.tipo;
+        } catch (_) {}
+      }
+
+      // restaura selecoes visuais
+      ['step1','step2','step3','step4'].forEach(key => {
+        const n = parseInt(key.replace('step',''));
+        answers[key].forEach(val => {
+          const el = document.querySelector(
+            `.option-card[data-step="${n}"][data-value="${val}"],` +
+            `.chip[data-step="${n}"][data-value="${val}"]`
+          );
+          if (el) {
+            el.classList.add('selected');
+            el.setAttribute('aria-checked', 'true');
+          }
+        });
+        validateStep(n);
+      });
+
+      // vai para o step salvo
+      currentStep = 1; // reset antes de goToStep
+      document.getElementById('step-1').classList.add('active');
+
+      if (savedStep > 1) {
+        document.getElementById('step-1').classList.remove('active');
+        currentStep = savedStep;
+        const target = document.getElementById('step-' + savedStep);
+        if (target) target.classList.add('active');
+      }
+
+      updateProgress();
+    }
+
+    // ── Event listeners — cards ───────────────────────────────
+    document.querySelectorAll('.option-card').forEach(card => {
+      card.addEventListener('click', () => toggleOption(card));
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleOption(card); }
+      });
+    });
+
+    // ── Event listeners — chips ───────────────────────────────
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => toggleChip(chip));
+      chip.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleChip(chip); }
+      });
+    });
+
+    // ── Botoes Proximo ────────────────────────────────────────
+    for (let i = 1; i <= 4; i++) {
+      const btn = document.getElementById('btn-' + i);
+      if (btn) {
+        btn.addEventListener('click', () => {
+          if (btn.disabled) return;
+          goToStep(i + 1);
+        });
+      }
+    }
+
+    // ── Botao Continuar (step 5) ──────────────────────────────
+    document.getElementById('btn-5').addEventListener('click', () => {
+      saveOab();
+      window.location.href = 'onboarding.html';
+    });
+
+    // ── Pular OAB ─────────────────────────────────────────────
+    skipOab.addEventListener('click', e => {
+      e.preventDefault();
+      window.location.href = 'onboarding.html';
+    });
+
+    // ── Fechar (X) ────────────────────────────────────────────
+    btnClose.addEventListener('click', () => {
+      window.location.href = 'onboarding.html';
+    });
+
+    // ── Init ──────────────────────────────────────────────────
+    restoreState();
+  })();
+</script>
+</body>
+</html>
