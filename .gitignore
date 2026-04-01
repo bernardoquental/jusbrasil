@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Claude Code internal files
+.claude/
+.agents/
+
+# Video/recording artifacts and large assets
+*.mp4
+*.m4s
+*.screenstudio
+*.gif
+
+# Codex / other AI tool dirs
+.codex/
+.cursor/
+.copilot/
+
+# Node
+node_modules/
