@@ -15,6 +15,7 @@
       --primary:           #007A5F;
       --primary-foreground:#FFFFFF;
       --primary-3:         #00664F;
+      --primary-1:         #E6F4F0;
       --muted:             #F1F5F9;
       --muted-foreground:  #5C6F8A;
       --border:            #E2E8F0;
@@ -41,64 +42,43 @@
     }
 
     /* ── LAYOUT ────────────────────────────────────────────── */
-    .app {
-      display: flex;
-      height: 100%;
-    }
+    .app { display: flex; height: 100%; }
 
     /* ── SIDEBAR ───────────────────────────────────────────── */
     .sidebar {
-      width: 56px;
-      flex-shrink: 0;
+      width: 56px; flex-shrink: 0;
       border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 16px 0;
+      display: flex; flex-direction: column; align-items: center; padding: 16px 0;
     }
-
-    .sidebar-top {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .sidebar-bottom {
-      margin-top: auto;
-    }
-
+    .sidebar-top { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .sidebar-bottom { margin-top: auto; }
     .sidebar-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: var(--radius-sm);
-      border: none;
-      background: transparent;
-      color: var(--muted-foreground);
-      cursor: pointer;
-      transition: background 160ms var(--ease-productive),
-                  color 160ms var(--ease-productive);
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      border: none; background: transparent; color: var(--muted-foreground); cursor: pointer;
+      transition: background 160ms var(--ease-productive), color 160ms var(--ease-productive);
     }
-
-    .sidebar-btn:hover {
-      background: var(--muted);
-      color: var(--foreground);
-    }
-
+    .sidebar-btn:hover { background: var(--muted); color: var(--foreground); }
     .sidebar-btn svg { width: 20px; height: 20px; }
 
     /* ── MAIN ──────────────────────────────────────────────── */
     .main {
       flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Área scrollável — conteúdo centralizado verticalmente */
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 40px 24px;
-      overflow-y: auto;
+      padding: 48px 24px 160px;
     }
 
     .content {
@@ -107,7 +87,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0;
     }
 
     /* ── GREETING ──────────────────────────────────────────── */
@@ -116,562 +95,289 @@
       font-weight: 700;
       letter-spacing: -0.5px;
       color: var(--foreground);
-      margin-bottom: 32px;
+      margin-bottom: 48px;
       opacity: 0;
       animation: fadeUp 240ms 80ms cubic-bezier(0.4,0.12,0.4,1) forwards;
     }
 
-    /* ── INPUT CARD (idêntico ao index.html) ───────────────── */
+    /* ── CHIPS ─────────────────────────────────────────────── */
+    .chips-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      opacity: 0;
+      animation: fadeUp 240ms 200ms cubic-bezier(0.4,0.12,0.4,1) forwards;
+    }
+
+    .chips-label {
+      font-size: 13px;
+      color: var(--muted-foreground);
+    }
+
+    .chips-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+      background: var(--background);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--foreground);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 160ms var(--ease-productive),
+                  border-color 160ms var(--ease-productive);
+    }
+
+    .chip:hover { background: var(--muted); border-color: var(--card-border); }
+
+    .chip svg { width: 15px; height: 15px; flex-shrink: 0; color: var(--muted-foreground); }
+
+    /* Chip personalizado — borda e ícone verdes */
+    .chip.personalized {
+      border-color: var(--primary);
+    }
+
+    .chip.personalized svg { color: var(--primary); }
+
+    .chip.personalized:hover { background: var(--primary-1); border-color: var(--primary-3); }
+
+    /* ── INPUT DOCK (fixo na base) ─────────────────────────── */
+    .input-dock {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 16px 24px 24px;
+      background: linear-gradient(to bottom, transparent, var(--background) 40%);
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ── INPUT CARD ────────────────────────────────────────── */
     .input-card {
       width: 100%;
+      max-width: 680px;
       background: var(--background);
       border: 1px solid var(--card-border);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-2);
       transition: box-shadow 160ms var(--ease-productive),
                   border-color 160ms var(--ease-productive);
-      opacity: 0;
-      animation: fadeUp 240ms 160ms cubic-bezier(0.4,0.12,0.4,1) forwards;
     }
-
     .input-card:focus-within { box-shadow: var(--shadow-3); }
 
-    .input-label-row {
-      position: relative;
-      padding: 16px 16px 8px;
-    }
+    .input-label-row { position: relative; padding: 16px 16px 8px; }
 
     .static-placeholder {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      right: 16px;
-      pointer-events: none;
-      color: var(--muted-foreground);
-      font-size: 14px;
-      line-height: 1.5;
-      white-space: nowrap;
-      overflow: hidden;
+      position: absolute; top: 16px; left: 16px; right: 16px;
+      pointer-events: none; color: var(--muted-foreground);
+      font-size: 14px; line-height: 1.5; white-space: nowrap; overflow: hidden;
     }
 
     .main-input {
-      width: 100%;
-      border: none;
-      outline: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      line-height: 1.5;
-      color: var(--foreground);
-      background: transparent;
-      resize: none;
-      min-height: 22px;
-      max-height: 200px;
-      overflow-y: auto;
-      caret-color: var(--primary);
-      display: block;
+      width: 100%; border: none; outline: none;
+      font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5;
+      color: var(--foreground); background: transparent;
+      resize: none; min-height: 22px; max-height: 200px; overflow-y: auto;
+      caret-color: var(--primary); display: block;
     }
-
     .main-input::placeholder { color: transparent; }
 
     .input-actions-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px 16px;
-      gap: 8px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px 16px; gap: 8px;
     }
-
-    .input-left-actions,
-    .input-right-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .input-left-actions, .input-right-actions { display: flex; align-items: center; gap: 8px; }
 
     .icon-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--card-border);
-      background: var(--background);
-      box-shadow: var(--shadow-1);
-      color: var(--foreground);
-      cursor: pointer;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border); background: var(--background);
+      box-shadow: var(--shadow-1); color: var(--foreground); cursor: pointer; flex-shrink: 0;
       transition: background 160ms var(--ease-productive);
     }
-
     .icon-btn:hover { background: var(--muted); }
-
     .icon-btn svg { width: 20px; height: 20px; }
 
     .chip-fundamentada {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      height: 36px;
-      padding: 0 12px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--card-border);
-      background: var(--background);
-      box-shadow: var(--shadow-1);
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      color: #2B3950;
-      cursor: pointer;
-      white-space: nowrap;
-      flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 36px; padding: 0 12px; border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border); background: var(--background);
+      box-shadow: var(--shadow-1); font-family: 'Inter', sans-serif;
+      font-size: 14px; font-weight: 600; color: #2B3950; cursor: pointer;
+      white-space: nowrap; flex-shrink: 0;
       transition: background 160ms var(--ease-productive);
     }
-
     .chip-fundamentada:hover { background: var(--muted); }
-
     .chip-fundamentada svg { width: 18px; height: 18px; flex-shrink: 0; }
 
     .btn-send {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--muted);
-      background: var(--muted);
-      color: var(--muted-foreground);
-      cursor: not-allowed;
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      border: 1px solid var(--muted); background: var(--muted);
+      color: var(--muted-foreground); cursor: not-allowed; flex-shrink: 0;
       transition: background 160ms var(--ease-productive),
                   border-color 160ms var(--ease-productive),
                   color 160ms var(--ease-productive),
                   transform 80ms var(--ease-productive);
-      flex-shrink: 0;
     }
-
     .btn-send svg { width: 18px; height: 18px; }
-
-    .btn-send.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: var(--primary-foreground);
-      cursor: pointer;
-    }
-
+    .btn-send.active { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); cursor: pointer; }
     .btn-send.active:hover { background: var(--primary-3); border-color: var(--primary-3); }
     .btn-send.active:active { transform: scale(0.92); }
 
-    /* ── SUGESTÕES ─────────────────────────────────────────── */
-    .suggestions {
-      width: 100%;
-      margin-top: 8px;
-      opacity: 0;
-      animation: fadeUp 240ms 240ms cubic-bezier(0.4,0.12,0.4,1) forwards;
-    }
-
-    .suggestion-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-      cursor: pointer;
-      color: var(--muted-foreground);
-      font-size: 14px;
-      font-weight: 500;
-      transition: color 160ms var(--ease-productive);
-      background: none;
-      border-left: none;
-      border-right: none;
-      border-top: none;
-      border-radius: 0;
-      width: 100%;
-      text-align: left;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .suggestion-item:hover { color: var(--foreground); }
-
-    .suggestion-item svg {
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-      color: var(--muted-foreground);
-    }
-
-    /* Toggle "Mostrar mais sugestões" */
-    .suggestions-toggle {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 0;
-      cursor: pointer;
-      color: var(--muted-foreground);
-      font-size: 14px;
-      font-weight: 500;
-      background: none;
-      border: none;
-      font-family: 'Inter', sans-serif;
-      width: 100%;
-      text-align: left;
-      transition: color 160ms var(--ease-productive);
-    }
-
-    .suggestions-toggle:hover { color: var(--foreground); }
-
-    .suggestions-toggle svg {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
-      transition: transform 240ms var(--ease-productive);
-    }
-
-    .suggestions-extra {
-      overflow: hidden;
-      max-height: 0;
-      transition: max-height 300ms var(--ease-productive);
-    }
-
     /* ── MODAL OVERLAY ─────────────────────────────────────── */
     .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.32);
-      backdrop-filter: blur(2px);
-      z-index: 300;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
+      position: fixed; inset: 0;
+      background: rgba(15,23,42,0.32); backdrop-filter: blur(2px);
+      z-index: 300; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
       transition: opacity 200ms var(--ease-productive);
     }
-
-    .modal-backdrop.open {
-      opacity: 1;
-      pointer-events: all;
-    }
+    .modal-backdrop.open { opacity: 1; pointer-events: all; }
 
     .modal {
-      background: var(--background);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-3);
-      width: 100%;
-      max-width: 400px;
-      margin: 16px;
+      background: var(--background); border: 1px solid var(--border);
+      border-radius: var(--radius-md); box-shadow: var(--shadow-3);
+      width: 100%; max-width: 400px; margin: 16px;
       transform: translateY(8px) scale(0.98);
       transition: transform 200ms var(--ease-productive);
     }
-
-    .modal-backdrop.open .modal {
-      transform: translateY(0) scale(1);
-    }
+    .modal-backdrop.open .modal { transform: translateY(0) scale(1); }
 
     .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 20px 16px;
-      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 20px 16px; border-bottom: 1px solid var(--border);
     }
-
-    .modal-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--foreground);
-    }
+    .modal-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
 
     .modal-close {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      border-radius: var(--radius-sm);
-      border: none;
-      background: transparent;
-      color: var(--muted-foreground);
-      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: var(--radius-sm);
+      border: none; background: transparent; color: var(--muted-foreground); cursor: pointer;
       transition: background 160ms var(--ease-productive), color 160ms var(--ease-productive);
     }
-
     .modal-close:hover { background: var(--muted); color: var(--foreground); }
     .modal-close svg { width: 16px; height: 16px; }
 
-    .modal-body {
-      padding: 0 20px;
-    }
+    .modal-body { padding: 0 20px; }
 
-    .modal-section {
-      padding: 18px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
+    .modal-section { padding: 18px 0; border-bottom: 1px solid var(--border); }
     .modal-section:last-child { border-bottom: none; }
 
-    .modal-section-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--foreground);
-      margin-bottom: 4px;
-    }
+    .modal-section-title { font-size: 13px; font-weight: 600; color: var(--foreground); margin-bottom: 4px; }
+    .modal-section-desc { font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px; line-height: 1.4; }
 
-    .modal-section-desc {
-      font-size: 12px;
-      color: var(--muted-foreground);
-      margin-bottom: 12px;
-      line-height: 1.4;
-    }
-
-    /* Tribunais — busca */
     .tribunal-search {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      height: 36px;
-      padding: 0 10px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--background);
-      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--background); margin-bottom: 10px;
     }
-
     .tribunal-search svg { width: 14px; height: 14px; color: var(--muted-foreground); flex-shrink: 0; }
-
     .tribunal-search input {
-      flex: 1;
-      border: none;
-      outline: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      color: var(--foreground);
-      background: transparent;
+      flex: 1; border: none; outline: none; font-family: 'Inter', sans-serif;
+      font-size: 13px; color: var(--foreground); background: transparent;
     }
-
     .tribunal-search input::placeholder { color: var(--muted-foreground); }
 
-    /* Tribunais — árvore */
-    .tribunal-tree {
-      max-height: 220px;
-      overflow-y: auto;
-    }
+    .tribunal-tree { max-height: 220px; overflow-y: auto; }
 
-    .tree-node {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 0;
-    }
+    .tree-node { display: flex; align-items: center; gap: 4px; padding: 4px 0; }
 
     .tree-caret {
-      width: 16px;
-      height: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      cursor: pointer;
-      border: none;
-      background: none;
-      padding: 0;
-      color: var(--muted-foreground);
-      border-radius: 3px;
-      transition: color 120ms;
+      width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; cursor: pointer; border: none; background: none; padding: 0;
+      color: var(--muted-foreground); border-radius: 3px; transition: color 120ms;
     }
-
     .tree-caret:hover { color: var(--foreground); }
     .tree-caret svg { width: 11px; height: 11px; transition: transform 160ms var(--ease-productive); }
     .tree-caret.open svg { transform: rotate(90deg); }
     .tree-caret.placeholder { cursor: default; opacity: 0; pointer-events: none; }
 
     .tree-check {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
-      border: 1.5px solid var(--card-border);
-      border-radius: 4px;
-      background: var(--background);
-      cursor: pointer;
-      flex-shrink: 0;
-      position: relative;
-      transition: background 160ms, border-color 160ms;
+      appearance: none; -webkit-appearance: none;
+      width: 16px; height: 16px; border: 1.5px solid var(--card-border);
+      border-radius: 4px; background: var(--background); cursor: pointer; flex-shrink: 0;
+      position: relative; transition: background 160ms, border-color 160ms;
     }
-
-    .tree-check:checked,
-    .tree-check.indeterminate {
-      background: var(--primary);
-      border-color: var(--primary);
-    }
-
+    .tree-check:checked, .tree-check.indeterminate { background: var(--primary); border-color: var(--primary); }
     .tree-check:checked::after {
-      content: '';
-      position: absolute;
-      top: 2px; left: 5px;
-      width: 4px; height: 7px;
-      border: 1.5px solid #fff;
-      border-top: none; border-left: none;
-      transform: rotate(45deg);
+      content: ''; position: absolute; top: 2px; left: 5px;
+      width: 4px; height: 7px; border: 1.5px solid #fff;
+      border-top: none; border-left: none; transform: rotate(45deg);
     }
-
     .tree-check.indeterminate::after {
-      content: '';
-      position: absolute;
-      top: 6px; left: 3px;
-      width: 8px; height: 2px;
-      background: #fff;
-      border-radius: 1px;
+      content: ''; position: absolute; top: 6px; left: 3px;
+      width: 8px; height: 2px; background: #fff; border-radius: 1px;
     }
+    .tree-label { font-size: 13px; color: var(--foreground); cursor: default; user-select: none; }
 
-    .tree-label {
-      font-size: 13px;
-      color: var(--foreground);
-      cursor: default;
-      user-select: none;
-    }
-
-    .tree-children {
-      padding-left: 20px;
-      overflow: hidden;
-      max-height: 0;
-      transition: max-height 200ms var(--ease-productive);
-    }
-
+    .tree-children { padding-left: 20px; overflow: hidden; max-height: 0; transition: max-height 200ms var(--ease-productive); }
     .tree-children.open { max-height: 1000px; }
 
-    /* Checkbox customizado */
     .check-option {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 6px 0;
-      cursor: pointer;
-      font-size: 13px;
-      color: var(--foreground);
-      user-select: none;
+      display: flex; align-items: center; gap: 10px; padding: 6px 0;
+      cursor: pointer; font-size: 13px; color: var(--foreground); user-select: none;
     }
-
     .check-option input[type="checkbox"] {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
-      border: 1.5px solid var(--card-border);
-      border-radius: 4px;
-      background: var(--background);
-      cursor: pointer;
-      flex-shrink: 0;
-      position: relative;
-      transition: background 160ms, border-color 160ms;
+      appearance: none; -webkit-appearance: none;
+      width: 16px; height: 16px; border: 1.5px solid var(--card-border);
+      border-radius: 4px; background: var(--background); cursor: pointer; flex-shrink: 0;
+      position: relative; transition: background 160ms, border-color 160ms;
     }
-
-    .check-option input[type="checkbox"]:checked {
-      background: var(--primary);
-      border-color: var(--primary);
-    }
-
+    .check-option input[type="checkbox"]:checked { background: var(--primary); border-color: var(--primary); }
     .check-option input[type="checkbox"]:checked::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 5px;
-      width: 4px;
-      height: 7px;
-      border: 1.5px solid #fff;
-      border-top: none;
-      border-left: none;
-      transform: rotate(45deg);
+      content: ''; position: absolute; top: 2px; left: 5px;
+      width: 4px; height: 7px; border: 1.5px solid #fff;
+      border-top: none; border-left: none; transform: rotate(45deg);
     }
 
-    /* Toggle switch */
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .toggle-label {
-      font-size: 13px;
-      color: var(--foreground);
-    }
-
-    .toggle {
-      position: relative;
-      width: 36px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .toggle-label { font-size: 13px; color: var(--foreground); }
+    .toggle { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
     .toggle input { opacity: 0; width: 0; height: 0; }
-
     .toggle-track {
-      position: absolute;
-      inset: 0;
-      border-radius: 10px;
-      background: var(--border);
-      cursor: pointer;
-      transition: background 200ms;
+      position: absolute; inset: 0; border-radius: 10px; background: var(--border);
+      cursor: pointer; transition: background 200ms;
     }
-
     .toggle-track::after {
-      content: '';
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: var(--shadow-1);
-      transition: transform 200ms var(--ease-productive);
+      content: ''; position: absolute; top: 3px; left: 3px;
+      width: 14px; height: 14px; border-radius: 50%; background: #fff;
+      box-shadow: var(--shadow-1); transition: transform 200ms var(--ease-productive);
     }
-
     .toggle input:checked + .toggle-track { background: var(--primary); }
     .toggle input:checked + .toggle-track::after { transform: translateX(16px); }
 
-    /* Modal footer */
     .modal-footer {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-      padding: 16px 20px;
-      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+      padding: 16px 20px; border-top: 1px solid var(--border);
     }
-
     .btn-modal-cancel {
-      height: 36px;
-      padding: 0 14px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--background);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--foreground);
-      cursor: pointer;
+      height: 36px; padding: 0 14px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: var(--background);
+      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+      color: var(--foreground); cursor: pointer;
       transition: background 160ms var(--ease-productive);
     }
-
     .btn-modal-cancel:hover { background: var(--muted); }
-
     .btn-modal-save {
-      height: 36px;
-      padding: 0 16px;
-      border-radius: var(--radius-sm);
-      border: none;
-      background: var(--primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--primary-foreground);
-      cursor: pointer;
+      height: 36px; padding: 0 16px; border-radius: var(--radius-sm);
+      border: none; background: var(--primary);
+      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+      color: var(--primary-foreground); cursor: pointer;
       transition: background 160ms var(--ease-productive);
     }
-
     .btn-modal-save:hover { background: var(--primary-3); }
 
     /* ── ANIMAÇÃO ──────────────────────────────────────────── */
@@ -688,28 +394,23 @@
   <!-- ── SIDEBAR ─────────────────────────────────────────── -->
   <aside class="sidebar" aria-label="Navegação lateral">
     <div class="sidebar-top">
-      <!-- Sidebar toggle -->
       <button class="sidebar-btn" aria-label="Alternar barra lateral">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>
         </svg>
       </button>
-      <!-- Compose -->
       <button class="sidebar-btn" aria-label="Nova conversa">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
         </svg>
       </button>
-      <!-- Search -->
       <button class="sidebar-btn" aria-label="Buscar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
       </button>
     </div>
-
     <div class="sidebar-bottom">
-      <!-- Profile -->
       <button class="sidebar-btn" aria-label="Perfil">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
@@ -720,22 +421,71 @@
 
   <!-- ── MAIN ────────────────────────────────────────────── -->
   <main class="main">
-    <div class="content">
 
-      <!-- Greeting -->
-      <h1 class="greeting" id="greeting"></h1>
+    <!-- Área scrollável centralizada -->
+    <div class="scroll-area">
+      <div class="content">
 
-      <!-- Input Card -->
+        <!-- Saudação -->
+        <h1 class="greeting" id="greeting"></h1>
+
+        <!-- Chips de sugestão -->
+        <div class="chips-section" id="chipsSection">
+          <span class="chips-label">Sugestões para o seu perfil</span>
+          <div class="chips-grid" id="chipsGrid">
+
+            <!-- Personalizados (borda verde + ícone sparkle verde) -->
+            <button class="chip personalized" data-idx="0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
+              </svg>
+              Busque jurisprudência trabalhista no TRT-7 para esse caso
+            </button>
+
+            <button class="chip personalized" data-idx="1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
+              </svg>
+              Verifique ação renovatória em locação comercial com contratos intercalados
+            </button>
+
+            <button class="chip personalized" data-idx="2">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
+              </svg>
+              Analise cláusulas abusivas neste contrato bancário
+            </button>
+
+            <!-- Regulares (borda cinza + ícone mensagem) -->
+            <button class="chip" data-idx="3">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              Elabore reclamação trabalhista com base nesses fatos
+            </button>
+
+            <button class="chip" data-idx="4">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              Mapeie precedentes sobre cobrança indevida bancária no CE
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Input fixo na base -->
+    <div class="input-dock">
       <form class="input-card" id="searchForm" autocomplete="off" novalidate>
         <div class="input-label-row">
           <span class="static-placeholder" id="staticPlaceholder">Insira documentos jurídicos, faça perguntas sobre casos, ou continue de onde parou...</span>
-          <textarea
-            class="main-input"
-            id="mainInput"
-            rows="1"
-            aria-label="Faça uma pergunta ao Jus IA"
-            spellcheck="false"
-          ></textarea>
+          <textarea class="main-input" id="mainInput" rows="1" aria-label="Faça uma pergunta ao Jus IA" spellcheck="false"></textarea>
         </div>
 
         <div class="input-actions-row">
@@ -777,65 +527,8 @@
           </div>
         </div>
       </form>
-
-      <!-- Sugestões -->
-      <div class="suggestions" id="suggestions">
-
-        <!-- 3 visíveis -->
-        <button class="suggestion-item" data-idx="0">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-          </svg>
-          Busque jurisprudência trabalhista no TRT-7 para esse caso
-        </button>
-
-        <button class="suggestion-item" data-idx="1">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-          </svg>
-          Analise cláusulas abusivas neste contrato bancário
-        </button>
-
-        <button class="suggestion-item" data-idx="2">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-          </svg>
-          Verifique ação renovatória em locação comercial com contratos intercalados
-        </button>
-
-        <!-- Toggle -->
-        <button class="suggestions-toggle" id="toggleMore">
-          <svg id="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="m6 9 6 6 6-6"/>
-          </svg>
-        </button>
-
-        <!-- 3 ocultas -->
-        <div class="suggestions-extra" id="extraList">
-          <button class="suggestion-item" data-idx="3">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-            Elabore reclamação trabalhista com base nesses fatos
-          </button>
-
-          <button class="suggestion-item" data-idx="4">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-            Mapeie precedentes sobre cobrança indevida bancária no CE
-          </button>
-
-          <button class="suggestion-item" data-idx="5" style="border-bottom: none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-            Pesquise regularidade de usucapião ou incorporação imobiliária
-          </button>
-        </div>
-
-      </div>
     </div>
+
   </main>
 </div>
 
@@ -861,8 +554,6 @@
         </div>
 
         <div class="tribunal-tree" id="tribunalTree">
-
-          <!-- Todos -->
           <div class="tree-node">
             <button class="tree-caret open" id="caretTodos" aria-label="Expandir Todos">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
@@ -870,95 +561,28 @@
             <input type="checkbox" class="tree-check indeterminate" id="chkTodos" />
             <span class="tree-label">Todos</span>
           </div>
-
           <div class="tree-children open" id="childrenTodos">
-
-            <!-- STF -->
+            <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" id="chkSTF" checked /><span class="tree-label">STF</span></div>
+            <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" id="chkSTJ" checked /><span class="tree-label">STJ</span></div>
+            <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" id="chkTST" /><span class="tree-label">TST</span></div>
             <div class="tree-node">
-              <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-              <input type="checkbox" class="tree-check" id="chkSTF" checked />
-              <span class="tree-label">STF</span>
-            </div>
-
-            <!-- STJ -->
-            <div class="tree-node">
-              <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-              <input type="checkbox" class="tree-check" id="chkSTJ" checked />
-              <span class="tree-label">STJ</span>
-            </div>
-
-            <!-- TST -->
-            <div class="tree-node">
-              <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-              <input type="checkbox" class="tree-check" id="chkTST" />
-              <span class="tree-label">TST</span>
-            </div>
-
-            <!-- TJs -->
-            <div class="tree-node">
-              <button class="tree-caret" id="caretTJs" aria-label="Expandir TJs">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-              </button>
-              <input type="checkbox" class="tree-check indeterminate" id="chkTJs" />
-              <span class="tree-label">TJs</span>
+              <button class="tree-caret" id="caretTJs" aria-label="Expandir TJs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+              <input type="checkbox" class="tree-check indeterminate" id="chkTJs" /><span class="tree-label">TJs</span>
             </div>
             <div class="tree-children" id="childrenTJs">
-              <div class="tree-node">
-                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-                <input type="checkbox" class="tree-check" />
-                <span class="tree-label">TJAC</span>
-              </div>
-              <div class="tree-node">
-                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-                <input type="checkbox" class="tree-check" />
-                <span class="tree-label">TJAL</span>
-              </div>
-              <div class="tree-node">
-                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-                <input type="checkbox" class="tree-check" />
-                <span class="tree-label">TJAM</span>
-              </div>
-              <div class="tree-node">
-                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-                <input type="checkbox" class="tree-check" checked />
-                <span class="tree-label">TJCE</span>
-              </div>
-              <div class="tree-node">
-                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-                <input type="checkbox" class="tree-check" />
-                <span class="tree-label">TJDF</span>
-              </div>
-              <div class="tree-node">
-                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-                <input type="checkbox" class="tree-check" />
-                <span class="tree-label">TJMG</span>
-              </div>
-              <div class="tree-node">
-                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-                <input type="checkbox" class="tree-check" />
-                <span class="tree-label">TJRJ</span>
-              </div>
-              <div class="tree-node">
-                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-                <input type="checkbox" class="tree-check" />
-                <span class="tree-label">TJSP</span>
-              </div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TJAC</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TJAL</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TJAM</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" checked /><span class="tree-label">TJCE</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TJDF</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TJMG</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TJRJ</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TJSP</span></div>
             </div>
-
-            <!-- TRFs -->
+            <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" id="chkTRFs" /><span class="tree-label">TRFs</span></div>
             <div class="tree-node">
-              <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-              <input type="checkbox" class="tree-check" id="chkTRFs" />
-              <span class="tree-label">TRFs</span>
-            </div>
-
-            <!-- TRTs -->
-            <div class="tree-node">
-              <button class="tree-caret open" id="caretTRTs" aria-label="Expandir TRTs">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-              </button>
-              <input type="checkbox" class="tree-check indeterminate" id="chkTRTs" />
-              <span class="tree-label">TRTs</span>
+              <button class="tree-caret open" id="caretTRTs" aria-label="Expandir TRTs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+              <input type="checkbox" class="tree-check indeterminate" id="chkTRTs" /><span class="tree-label">TRTs</span>
             </div>
             <div class="tree-children open" id="childrenTRTs">
               <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TRT-1</span></div>
@@ -972,7 +596,6 @@
               <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TRT-9</span></div>
               <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TRT-10</span></div>
             </div>
-
           </div>
         </div>
       </div>
@@ -981,18 +604,9 @@
       <div class="modal-section">
         <div class="modal-section-title">Fontes jurídicas</div>
         <div class="modal-section-desc">Quais fontes o Jus IA deve priorizar</div>
-        <label class="check-option">
-          <input type="checkbox" id="chkJurisp" checked />
-          Jurisprudência
-        </label>
-        <label class="check-option">
-          <input type="checkbox" id="chkLeg" />
-          Legislação
-        </label>
-        <label class="check-option">
-          <input type="checkbox" id="chkDout" />
-          Doutrina
-        </label>
+        <label class="check-option"><input type="checkbox" id="chkJurisp" checked />Jurisprudência</label>
+        <label class="check-option"><input type="checkbox" id="chkLeg" />Legislação</label>
+        <label class="check-option"><input type="checkbox" id="chkDout" />Doutrina</label>
       </div>
 
       <!-- Personalização automática -->
@@ -1069,14 +683,13 @@
     // ── Prompts completos ─────────────────────────────────────
     const PROMPTS = [
       'Busque jurisprudência trabalhista no TRT-7 (7ª Região — Ceará) aplicável ao seguinte caso: [descreva a situação do trabalhador, o pedido e os fatos relevantes]. Considere precedentes do TST alinhados à orientação do TRT-7.',
-      'Analise as cláusulas deste contrato bancário e identifique abusividades, juros acima do limite legal, cobranças indevidas e práticas vedadas pelo CDC e pelo BACEN. Destaque os pontos mais favoráveis ao cliente.',
       'Tenho um cliente que aluga uma sala comercial há 6 anos, mas os contratos foram feitos em períodos distintos: o primeiro durou 2 anos, teve um intervalo de 3 meses sem contrato formal enquanto ele continuou ocupando o imóvel, e depois foi feito um novo contrato que está vigente até julho. O locador notificou que não vai renovar alegando que quer usar o espaço para um familiar. Há possibilidade de propor uma ação renovatória ou pedir indenização?',
+      'Analise as cláusulas deste contrato bancário e identifique abusividades, juros acima do limite legal, cobranças indevidas e práticas vedadas pelo CDC e pelo BACEN. Destaque os pontos mais favoráveis ao cliente.',
       'Elabore uma reclamação trabalhista com base nos seguintes fatos: [descreva a relação de trabalho, os direitos violados e os pedidos]. Inclua fundamentos legais e jurisprudência do TRT-7 e TST.',
       'Mapeie precedentes sobre cobrança indevida ou práticas abusivas de instituições financeiras no Ceará. Caso: [descreva o produto financeiro, os valores cobrados e a situação do cliente].',
-      'Pesquise a viabilidade jurídica de usucapião ou regularização de incorporação imobiliária para o seguinte imóvel: [descreva a localização, o tempo de posse, a situação registral e as partes envolvidas].',
     ];
 
-    document.getElementById('suggestions').addEventListener('click', e => {
+    document.getElementById('chipsGrid').addEventListener('click', e => {
       const btn = e.target.closest('[data-idx]');
       if (!btn) return;
       const prompt = PROMPTS[+btn.dataset.idx];
@@ -1087,30 +700,13 @@
       input.focus();
     });
 
-    // ── Expandir sugestões ────────────────────────────────────
-    const toggleBtn = document.getElementById('toggleMore');
-    const extraList = document.getElementById('extraList');
-    const chevron   = document.getElementById('chevron');
-    let expanded    = false;
-
-    const toggleLabel = document.createTextNode('Mostrar mais sugestões');
-    toggleBtn.appendChild(toggleLabel);
-
-    toggleBtn.addEventListener('click', () => {
-      expanded = !expanded;
-      extraList.style.maxHeight = expanded ? extraList.scrollHeight + 'px' : '0';
-      chevron.style.transform   = expanded ? 'rotate(180deg)' : '';
-      toggleLabel.textContent   = expanded ? 'Mostrar menos' : 'Mostrar mais sugestões';
-    });
-
     // ── Modal parâmetros ──────────────────────────────────────
-    const modal      = document.getElementById('paramsModal');
-    const btnParams  = document.getElementById('btnParams');
-    const modalClose = document.getElementById('modalClose');
-    const modalCancel= document.getElementById('modalCancel');
-    const modalSave  = document.getElementById('modalSave');
+    const modal       = document.getElementById('paramsModal');
+    const btnParams   = document.getElementById('btnParams');
+    const modalClose  = document.getElementById('modalClose');
+    const modalCancel = document.getElementById('modalCancel');
+    const modalSave   = document.getElementById('modalSave');
 
-    // define estado indeterminate nos checkboxes de grupo ao abrir
     function initTreeIndeterminate() {
       ['chkTodos','chkTJs','chkTRTs'].forEach(id => {
         const el = document.getElementById(id);
@@ -1118,7 +714,6 @@
       });
     }
 
-    // toggle expand/collapse de um grupo
     function bindCaret(caretId, childrenId) {
       const caret    = document.getElementById(caretId);
       const children = document.getElementById(childrenId);
@@ -1140,23 +735,21 @@
     modalClose.addEventListener('click', closeModal);
     modalCancel.addEventListener('click', closeModal);
     modalSave.addEventListener('click', () => {
-      // persiste preferências
       const prefs = {
-        jurisp:    document.getElementById('chkJurisp').checked,
-        leg:       document.getElementById('chkLeg').checked,
-        dout:      document.getElementById('chkDout').checked,
+        jurisp: document.getElementById('chkJurisp').checked,
+        leg:    document.getElementById('chkLeg').checked,
+        dout:   document.getElementById('chkDout').checked,
         personalizacao: document.getElementById('chkPersonalizacao').checked,
       };
       localStorage.setItem('jusIA_prefs', JSON.stringify(prefs));
       closeModal();
     });
 
-    // fecha ao clicar fora
     modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 
     // ── Init ──────────────────────────────────────────────────
     const saved = localStorage.getItem(STORAGE_KEY) || '';
-    if (saved) { input.value = saved; }
+    if (saved) input.value = saved;
     syncButtons();
     autoResize();
   })();
