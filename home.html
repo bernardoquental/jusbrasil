@@ -452,22 +452,94 @@
 
     .tribunal-search input::placeholder { color: var(--muted-foreground); }
 
-    /* Tribunais — opção todos */
-    .tribunal-option {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 0;
-      cursor: pointer;
-      font-size: 13px;
-      color: var(--foreground);
+    /* Tribunais — árvore */
+    .tribunal-tree {
+      max-height: 220px;
+      overflow-y: auto;
     }
 
-    .tribunal-option-chevron {
-      width: 14px;
-      height: 14px;
-      color: var(--muted-foreground);
+    .tree-node {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
     }
+
+    .tree-caret {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      color: var(--muted-foreground);
+      border-radius: 3px;
+      transition: color 120ms;
+    }
+
+    .tree-caret:hover { color: var(--foreground); }
+    .tree-caret svg { width: 11px; height: 11px; transition: transform 160ms var(--ease-productive); }
+    .tree-caret.open svg { transform: rotate(90deg); }
+    .tree-caret.placeholder { cursor: default; opacity: 0; pointer-events: none; }
+
+    .tree-check {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--card-border);
+      border-radius: 4px;
+      background: var(--background);
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      transition: background 160ms, border-color 160ms;
+    }
+
+    .tree-check:checked,
+    .tree-check.indeterminate {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .tree-check:checked::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 5px;
+      width: 4px; height: 7px;
+      border: 1.5px solid #fff;
+      border-top: none; border-left: none;
+      transform: rotate(45deg);
+    }
+
+    .tree-check.indeterminate::after {
+      content: '';
+      position: absolute;
+      top: 6px; left: 3px;
+      width: 8px; height: 2px;
+      background: #fff;
+      border-radius: 1px;
+    }
+
+    .tree-label {
+      font-size: 13px;
+      color: var(--foreground);
+      cursor: default;
+      user-select: none;
+    }
+
+    .tree-children {
+      padding-left: 20px;
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 200ms var(--ease-productive);
+    }
+
+    .tree-children.open { max-height: 1000px; }
 
     /* Checkbox customizado */
     .check-option {
@@ -787,11 +859,122 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           <input type="text" placeholder="Ex.: STF" id="tribunalSearch" autocomplete="off" />
         </div>
-        <label class="tribunal-option">
-          <svg class="tribunal-option-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-          <input type="checkbox" id="chkTodos" checked style="appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1.5px solid var(--card-border);border-radius:4px;background:var(--background);cursor:pointer;flex-shrink:0;position:relative;transition:background 160ms,border-color 160ms;" />
-          <span>Todos (27)</span>
-        </label>
+
+        <div class="tribunal-tree" id="tribunalTree">
+
+          <!-- Todos -->
+          <div class="tree-node">
+            <button class="tree-caret open" id="caretTodos" aria-label="Expandir Todos">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+            <input type="checkbox" class="tree-check indeterminate" id="chkTodos" />
+            <span class="tree-label">Todos</span>
+          </div>
+
+          <div class="tree-children open" id="childrenTodos">
+
+            <!-- STF -->
+            <div class="tree-node">
+              <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+              <input type="checkbox" class="tree-check" id="chkSTF" checked />
+              <span class="tree-label">STF</span>
+            </div>
+
+            <!-- STJ -->
+            <div class="tree-node">
+              <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+              <input type="checkbox" class="tree-check" id="chkSTJ" checked />
+              <span class="tree-label">STJ</span>
+            </div>
+
+            <!-- TST -->
+            <div class="tree-node">
+              <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+              <input type="checkbox" class="tree-check" id="chkTST" />
+              <span class="tree-label">TST</span>
+            </div>
+
+            <!-- TJs -->
+            <div class="tree-node">
+              <button class="tree-caret" id="caretTJs" aria-label="Expandir TJs">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+              <input type="checkbox" class="tree-check indeterminate" id="chkTJs" />
+              <span class="tree-label">TJs</span>
+            </div>
+            <div class="tree-children" id="childrenTJs">
+              <div class="tree-node">
+                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+                <input type="checkbox" class="tree-check" />
+                <span class="tree-label">TJAC</span>
+              </div>
+              <div class="tree-node">
+                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+                <input type="checkbox" class="tree-check" />
+                <span class="tree-label">TJAL</span>
+              </div>
+              <div class="tree-node">
+                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+                <input type="checkbox" class="tree-check" />
+                <span class="tree-label">TJAM</span>
+              </div>
+              <div class="tree-node">
+                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+                <input type="checkbox" class="tree-check" checked />
+                <span class="tree-label">TJCE</span>
+              </div>
+              <div class="tree-node">
+                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+                <input type="checkbox" class="tree-check" />
+                <span class="tree-label">TJDF</span>
+              </div>
+              <div class="tree-node">
+                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+                <input type="checkbox" class="tree-check" />
+                <span class="tree-label">TJMG</span>
+              </div>
+              <div class="tree-node">
+                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+                <input type="checkbox" class="tree-check" />
+                <span class="tree-label">TJRJ</span>
+              </div>
+              <div class="tree-node">
+                <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+                <input type="checkbox" class="tree-check" />
+                <span class="tree-label">TJSP</span>
+              </div>
+            </div>
+
+            <!-- TRFs -->
+            <div class="tree-node">
+              <button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+              <input type="checkbox" class="tree-check" id="chkTRFs" />
+              <span class="tree-label">TRFs</span>
+            </div>
+
+            <!-- TRTs -->
+            <div class="tree-node">
+              <button class="tree-caret open" id="caretTRTs" aria-label="Expandir TRTs">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+              <input type="checkbox" class="tree-check indeterminate" id="chkTRTs" />
+              <span class="tree-label">TRTs</span>
+            </div>
+            <div class="tree-children open" id="childrenTRTs">
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TRT-1</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TRT-2</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TRT-3</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TRT-4</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TRT-5</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TRT-6</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" checked /><span class="tree-label">TRT-7</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TRT-8</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TRT-9</span></div>
+              <div class="tree-node"><button class="tree-caret placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><input type="checkbox" class="tree-check" /><span class="tree-label">TRT-10</span></div>
+            </div>
+
+          </div>
+        </div>
       </div>
 
       <!-- Fontes jurídicas -->
@@ -926,22 +1109,31 @@
     const modalClose = document.getElementById('modalClose');
     const modalCancel= document.getElementById('modalCancel');
     const modalSave  = document.getElementById('modalSave');
-    const chkTodos   = document.getElementById('chkTodos');
 
-    // estilo checked do checkbox manual (chkTodos usa inline style)
-    function syncTodosStyle() {
-      if (chkTodos.checked) {
-        chkTodos.style.background = 'var(--primary)';
-        chkTodos.style.borderColor = 'var(--primary)';
-      } else {
-        chkTodos.style.background = 'var(--background)';
-        chkTodos.style.borderColor = 'var(--card-border)';
-      }
+    // define estado indeterminate nos checkboxes de grupo ao abrir
+    function initTreeIndeterminate() {
+      ['chkTodos','chkTJs','chkTRTs'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.indeterminate = true;
+      });
     }
-    chkTodos.addEventListener('change', syncTodosStyle);
-    syncTodosStyle();
 
-    function openModal()  { modal.classList.add('open'); }
+    // toggle expand/collapse de um grupo
+    function bindCaret(caretId, childrenId) {
+      const caret    = document.getElementById(caretId);
+      const children = document.getElementById(childrenId);
+      if (!caret || !children) return;
+      caret.addEventListener('click', () => {
+        const open = children.classList.toggle('open');
+        caret.classList.toggle('open', open);
+      });
+    }
+
+    bindCaret('caretTodos', 'childrenTodos');
+    bindCaret('caretTJs',   'childrenTJs');
+    bindCaret('caretTRTs',  'childrenTRTs');
+
+    function openModal()  { modal.classList.add('open'); initTreeIndeterminate(); }
     function closeModal() { modal.classList.remove('open'); }
 
     btnParams.addEventListener('click', openModal);
