@@ -94,7 +94,9 @@
 
     .response-title {
       font-size: 18px; font-weight: 700; color: var(--foreground); letter-spacing: -0.2px;
+      opacity: 0; transition: opacity 240ms var(--ease-productive);
     }
+    .response-title.visible { opacity: 1; }
 
     /* ── TYPEWRITER BODY ──────────────────────────────────── */
     .response-body {
@@ -111,6 +113,10 @@
     }
     .response-body li { line-height: 1.7; }
     .response-body strong { font-weight: 600; }
+
+    /* Esconde marcadores de lista enquanto o typewriter está ativo */
+    .response-body.typing li::marker { content: ''; }
+    .response-body.typing h3 { font-size: 0; }
 
     /* Cursor piscante no final do typewriter */
     .tw-cursor {
@@ -677,7 +683,12 @@
 
   // Inicia typewriter após 1.5s
   setTimeout(() => {
-    typeHTML(responseBody, RESPONSE_HTML, 8, revealAfterType);
+    document.querySelector('.response-title').classList.add('visible');
+    responseBody.classList.add('typing');
+    typeHTML(responseBody, RESPONSE_HTML, 8, () => {
+      responseBody.classList.remove('typing');
+      revealAfterType();
+    });
   }, 1500);
 
 })();
