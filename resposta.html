@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    /* ── Farol DS tokens ──────────────────────────────────── */
     :root {
       --background:        #FFFFFF;
       --foreground:        #0F172A;
@@ -20,11 +19,9 @@
       --muted-foreground:  #5C6F8A;
       --border:            #E2E8F0;
       --card-border:       #CCD5E1;
-
       --shadow-1: 0px 2px 4px 0px rgba(25,52,102,0.04);
       --shadow-2: 0px 2px 8px 0px rgba(25,52,102,0.08);
       --shadow-3: 0px 4px 24px 0px rgba(25,52,102,0.08);
-
       --ease-productive: cubic-bezier(0,0,0.3,1);
       --radius-sm: 8px;
       --radius-md: 16px;
@@ -41,375 +38,265 @@
       overflow: hidden;
     }
 
-    /* ── LAYOUT ────────────────────────────────────────────── */
-    .app {
-      display: flex;
-      height: 100%;
-    }
+    .app { display: flex; height: 100%; }
 
-    /* ── SIDEBAR (idêntica à home) ─────────────────────────── */
+    /* ── SIDEBAR ──────────────────────────────────────────── */
     .sidebar {
-      width: 56px;
-      flex-shrink: 0;
+      width: 56px; flex-shrink: 0;
       border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 16px 0;
+      display: flex; flex-direction: column; align-items: center; padding: 16px 0;
     }
-
-    .sidebar-top {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
+    .sidebar-top { display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .sidebar-bottom { margin-top: auto; }
-
     .sidebar-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: var(--radius-sm);
-      border: none;
-      background: transparent;
-      color: var(--muted-foreground);
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      border: none; background: transparent; color: var(--muted-foreground);
       cursor: pointer;
-      transition: background 160ms var(--ease-productive),
-                  color 160ms var(--ease-productive);
+      transition: background 160ms var(--ease-productive), color 160ms var(--ease-productive);
     }
-
     .sidebar-btn:hover { background: var(--muted); color: var(--foreground); }
     .sidebar-btn svg { width: 20px; height: 20px; }
 
-    /* ── CHAT MAIN ─────────────────────────────────────────── */
-    .chat-main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-    }
+    /* ── CHAT MAIN ────────────────────────────────────────── */
+    .chat-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
 
-    /* ── MESSAGES AREA (scrollável) ────────────────────────── */
+    /* ── MESSAGES AREA ────────────────────────────────────── */
     .messages-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 40px 0 180px;  /* padding-bottom para o input fixo */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      flex: 1; overflow-y: auto;
+      padding: 40px 0 200px;
+      display: flex; flex-direction: column; align-items: center;
     }
-
     .messages-inner {
-      width: 100%;
-      max-width: 680px;
-      padding: 0 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
+      width: 100%; max-width: 680px; padding: 0 24px;
+      display: flex; flex-direction: column; gap: 32px;
     }
 
-    /* ── BALÃO DO USUÁRIO ──────────────────────────────────── */
+    /* ── BALÃO DO USUÁRIO ─────────────────────────────────── */
     .user-bubble {
-      align-self: flex-end;
-      max-width: 85%;
+      align-self: flex-end; max-width: 85%;
       background: var(--muted);
       border-radius: 18px 18px 4px 18px;
       padding: 14px 18px;
-      font-size: 15px;
-      line-height: 1.6;
+      font-size: 15px; line-height: 1.6;
       color: var(--foreground);
-      white-space: pre-wrap;
-      word-break: break-word;
+      white-space: pre-wrap; word-break: break-word;
     }
 
-    /* ── RESPOSTA DO AGENTE ────────────────────────────────── */
-    .agent-response {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+    /* ── RESPOSTA DO AGENTE ───────────────────────────────── */
+    .agent-response { display: flex; flex-direction: column; gap: 20px; }
 
-    /* Logo pequeno + label "Jus IA" */
     .agent-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted-foreground);
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600; color: var(--muted-foreground);
     }
-
     .agent-label svg { width: 18px; height: 18px; }
 
-    /* Título da resposta */
     .response-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--foreground);
-      letter-spacing: -0.2px;
+      font-size: 18px; font-weight: 700; color: var(--foreground); letter-spacing: -0.2px;
     }
 
-    /* Corpo da resposta */
+    /* ── TYPEWRITER BODY ──────────────────────────────────── */
     .response-body {
-      font-size: 15px;
-      line-height: 1.75;
-      color: var(--foreground);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      font-size: 15px; line-height: 1.75; color: var(--foreground);
+      display: flex; flex-direction: column; gap: 14px;
     }
-
     .response-body p { margin: 0; }
-
-    .response-body ol {
-      padding-left: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    .response-body h3 {
+      font-size: 15px; font-weight: 700; color: var(--foreground);
+      margin-top: 4px; letter-spacing: -0.1px;
     }
-
+    .response-body ul, .response-body ol {
+      padding-left: 20px; display: flex; flex-direction: column; gap: 8px;
+    }
     .response-body li { line-height: 1.7; }
+    .response-body strong { font-weight: 600; }
 
-    /* ── CARD DE FONTE ─────────────────────────────────────── */
+    /* Cursor piscante no final do typewriter */
+    .tw-cursor {
+      display: inline-block;
+      width: 2px; height: 1em;
+      background: var(--primary);
+      margin-left: 2px;
+      vertical-align: text-bottom;
+      animation: blink 800ms step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── CARD DE FONTE ────────────────────────────────────── */
     .source-card {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      display: flex; align-items: center; gap: 12px;
       padding: 12px 16px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border);
       border-left: 3px solid var(--primary);
       background: var(--primary-1);
-      font-size: 13px;
-      color: var(--foreground);
-      line-height: 1.4;
+      font-size: 13px; color: var(--foreground); line-height: 1.4;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity 300ms var(--ease-productive), transform 300ms var(--ease-productive);
     }
-
-    .source-card-icon {
-      flex-shrink: 0;
-      width: 18px;
-      height: 18px;
-      color: var(--primary);
-    }
-
+    .source-card.visible { opacity: 1; transform: translateY(0); }
+    .source-card-icon { flex-shrink: 0; width: 18px; height: 18px; color: var(--primary); }
     .source-card-label {
-      font-weight: 600;
-      font-size: 12px;
-      color: var(--primary);
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      margin-bottom: 2px;
+      font-weight: 600; font-size: 12px; color: var(--primary);
+      text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 2px;
     }
-
     .source-card-text { color: var(--muted-foreground); }
 
-    /* ── BARRA DE AÇÕES ────────────────────────────────────── */
+    /* ── BARRA DE AÇÕES ───────────────────────────────────── */
     .action-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity 300ms 80ms var(--ease-productive), transform 300ms 80ms var(--ease-productive);
     }
+    .action-bar.visible { opacity: 1; transform: translateY(0); }
 
     .btn-action {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      height: 34px;
-      padding: 0 14px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--background);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--foreground);
-      cursor: pointer;
-      transition: background 160ms var(--ease-productive),
-                  border-color 160ms var(--ease-productive);
-      white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 34px; padding: 0 14px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: var(--background);
+      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+      color: var(--foreground); cursor: pointer; white-space: nowrap;
+      transition: background 160ms var(--ease-productive), border-color 160ms var(--ease-productive);
     }
-
     .btn-action:hover { background: var(--muted); border-color: var(--card-border); }
     .btn-action svg { width: 15px; height: 15px; color: var(--muted-foreground); }
 
     .btn-action-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 34px;
-      height: 34px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--background);
-      color: var(--muted-foreground);
-      cursor: pointer;
-      transition: background 160ms var(--ease-productive),
-                  color 160ms var(--ease-productive);
-      flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: var(--background);
+      color: var(--muted-foreground); cursor: pointer; flex-shrink: 0;
+      transition: background 160ms var(--ease-productive), color 160ms var(--ease-productive);
     }
-
     .btn-action-icon:hover { background: var(--muted); color: var(--foreground); }
     .btn-action-icon svg { width: 15px; height: 15px; }
 
-    .action-divider {
-      width: 1px;
-      height: 20px;
-      background: var(--border);
-      margin: 0 2px;
+    .action-divider { width: 1px; height: 20px; background: var(--border); margin: 0 2px; }
+
+    /* ── FOLLOW-UPS ───────────────────────────────────────── */
+    .followup-section {
+      display: flex; flex-direction: column; gap: 8px;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 360ms 160ms var(--ease-productive), transform 360ms 160ms var(--ease-productive);
+    }
+    .followup-section.visible { opacity: 1; transform: translateY(0); }
+
+    .followup-header {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 12px; font-weight: 600; color: var(--muted-foreground);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .followup-header svg { width: 13px; height: 13px; color: var(--primary); }
+
+    .followup-card {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--background);
+      cursor: pointer;
+      transition: background 160ms var(--ease-productive), border-color 160ms var(--ease-productive);
+      text-align: left; width: 100%;
+      font-family: 'Inter', sans-serif;
+    }
+    .followup-card:hover { background: var(--muted); border-color: var(--card-border); }
+
+    .followup-icon {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--primary-1); color: var(--primary);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .followup-icon svg { width: 11px; height: 11px; }
+
+    .followup-content { flex: 1; }
+
+    .followup-context {
+      font-size: 12px; color: var(--muted-foreground); line-height: 1.45;
+      margin-bottom: 4px;
     }
 
-    /* ── INPUT DOCK (fixo no fundo) ─────────────────────────── */
+    .followup-question {
+      font-size: 13px; color: var(--foreground); line-height: 1.5; font-weight: 500;
+    }
+
+    /* ── INPUT DOCK ───────────────────────────────────────── */
     .input-dock {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      position: absolute; bottom: 0; left: 0; right: 0;
       padding: 16px 24px 24px;
       background: linear-gradient(to bottom, transparent, var(--background) 40%);
-      display: flex;
-      justify-content: center;
+      display: flex; justify-content: center;
     }
 
-    /* ── INPUT CARD (mesmo da home) ────────────────────────── */
     .input-card {
-      width: 100%;
-      max-width: 680px;
+      width: 100%; max-width: 680px;
       background: var(--background);
       border: 1px solid var(--card-border);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-3);
       transition: box-shadow 160ms var(--ease-productive);
     }
-
     .input-card:focus-within { box-shadow: var(--shadow-3); }
 
-    .input-label-row {
-      position: relative;
-      padding: 16px 16px 8px;
-    }
+    .input-label-row { position: relative; padding: 16px 16px 8px; }
 
     .static-placeholder {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      right: 16px;
-      pointer-events: none;
-      color: var(--muted-foreground);
-      font-size: 14px;
-      line-height: 1.5;
-      white-space: nowrap;
-      overflow: hidden;
+      position: absolute; top: 16px; left: 16px; right: 16px;
+      pointer-events: none; color: var(--muted-foreground);
+      font-size: 14px; line-height: 1.5; white-space: nowrap; overflow: hidden;
     }
 
     .main-input {
-      width: 100%;
-      border: none;
-      outline: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      line-height: 1.5;
-      color: var(--foreground);
-      background: transparent;
-      resize: none;
-      min-height: 22px;
-      max-height: 160px;
-      overflow-y: auto;
-      caret-color: var(--primary);
-      display: block;
+      width: 100%; border: none; outline: none;
+      font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5;
+      color: var(--foreground); background: transparent;
+      resize: none; min-height: 22px; max-height: 160px; overflow-y: auto;
+      caret-color: var(--primary); display: block;
     }
-
     .main-input::placeholder { color: transparent; }
 
     .input-actions-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px 16px;
-      gap: 8px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px 16px; gap: 8px;
     }
-
-    .input-left-actions,
-    .input-right-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .input-left-actions, .input-right-actions { display: flex; align-items: center; gap: 8px; }
 
     .icon-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--card-border);
-      background: var(--background);
-      box-shadow: var(--shadow-1);
-      color: var(--foreground);
-      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border); background: var(--background);
+      box-shadow: var(--shadow-1); color: var(--foreground); cursor: pointer; flex-shrink: 0;
       transition: background 160ms var(--ease-productive);
-      flex-shrink: 0;
     }
-
     .icon-btn:hover { background: var(--muted); }
     .icon-btn svg { width: 20px; height: 20px; }
 
     .chip-fundamentada {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      height: 36px;
-      padding: 0 12px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--card-border);
-      background: var(--background);
-      box-shadow: var(--shadow-1);
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      color: #2B3950;
-      cursor: pointer;
-      white-space: nowrap;
-      flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 36px; padding: 0 12px; border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border); background: var(--background);
+      box-shadow: var(--shadow-1); font-family: 'Inter', sans-serif;
+      font-size: 14px; font-weight: 600; color: #2B3950;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
       transition: background 160ms var(--ease-productive);
     }
-
     .chip-fundamentada:hover { background: var(--muted); }
     .chip-fundamentada svg { width: 18px; height: 18px; flex-shrink: 0; }
 
     .btn-send {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--muted);
-      background: var(--muted);
-      color: var(--muted-foreground);
-      cursor: not-allowed;
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      border: 1px solid var(--muted); background: var(--muted);
+      color: var(--muted-foreground); cursor: not-allowed; flex-shrink: 0;
       transition: background 160ms var(--ease-productive),
                   border-color 160ms var(--ease-productive),
                   color 160ms var(--ease-productive),
                   transform 80ms var(--ease-productive);
-      flex-shrink: 0;
     }
-
     .btn-send svg { width: 18px; height: 18px; }
-
-    .btn-send.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: var(--primary-foreground);
-      cursor: pointer;
-    }
-
+    .btn-send.active { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); cursor: pointer; }
     .btn-send.active:hover { background: var(--primary-3); border-color: var(--primary-3); }
     .btn-send.active:active { transform: scale(0.92); }
   </style>
@@ -418,7 +305,7 @@
 
 <div class="app">
 
-  <!-- ── SIDEBAR ─────────────────────────────────────────── -->
+  <!-- ── SIDEBAR ──────────────────────────────────────────── -->
   <aside class="sidebar" aria-label="Navegação lateral">
     <div class="sidebar-top">
       <button class="sidebar-btn" aria-label="Alternar barra lateral">
@@ -446,10 +333,9 @@
     </div>
   </aside>
 
-  <!-- ── CHAT MAIN ───────────────────────────────────────── -->
+  <!-- ── CHAT MAIN ────────────────────────────────────────── -->
   <div class="chat-main">
 
-    <!-- Área de mensagens scrollável -->
     <div class="messages-area" id="messagesArea">
       <div class="messages-inner">
 
@@ -461,74 +347,102 @@
 
           <div class="agent-label">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 32" fill="none" aria-hidden="true">
-              <path fill-rule="evenodd" clip-rule="evenodd" fill="#FC0"     d="M26.098 0H12.663c-.508 0-.944.374-1.032.883l-.36 2.09s-.004.016-.004.023L8.768 17.52h5.734c.39 0 .746.216.93.565l6.428 12.342s.077.152.102.272c.016.079.023.134.028.178v.162a1 1 0 0 1-.014.1q.006-.02.01-.04l4.788-27.732.366-2.112A1.067 1.067 0 0 0 26.098 0"/>
-              <path fill-rule="evenodd" clip-rule="evenodd" fill="#3D82DA"  d="M6.478 31.181v-.004q-.007-.044-.011-.093v-.016c0-.027-.005-.057-.005-.085v-.03q0-.036.003-.074.001-.026.006-.053.002-.027.007-.055.01-.055.02-.113L8.767 17.52H1.049c-.792.002-1.298.862-.924 1.573l6.428 12.342.01.016a1 1 0 0 1-.085-.27"/>
-              <path fill-rule="evenodd" clip-rule="evenodd" fill="#77B340"  d="M21.99 31.038c-.041.584-.58.969-1.026.962H7.536c-.175 0-.356-.046-.356-.046-.557-.152-.82-.676-.681-1.296L8.766 17.52H14.5c.39 0 .747.216.931.565l6.428 12.342s.077.152.102.272.03.19.03.24z"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" fill="#FC0"    d="M26.098 0H12.663c-.508 0-.944.374-1.032.883l-.36 2.09s-.004.016-.004.023L8.768 17.52h5.734c.39 0 .746.216.93.565l6.428 12.342s.077.152.102.272c.016.079.023.134.028.178v.162a1 1 0 0 1-.014.1q.006-.02.01-.04l4.788-27.732.366-2.112A1.067 1.067 0 0 0 26.098 0"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" fill="#3D82DA" d="M6.478 31.181v-.004q-.007-.044-.011-.093v-.016c0-.027-.005-.057-.005-.085v-.03q0-.036.003-.074.001-.026.006-.053.002-.027.007-.055.01-.055.02-.113L8.767 17.52H1.049c-.792.002-1.298.862-.924 1.573l6.428 12.342.01.016a1 1 0 0 1-.085-.27"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" fill="#77B340" d="M21.99 31.038c-.041.584-.58.969-1.026.962H7.536c-.175 0-.356-.046-.356-.046-.557-.152-.82-.676-.681-1.296L8.766 17.52H14.5c.39 0 .747.216.931.565l6.428 12.342s.077.152.102.272.03.19.03.24z"/>
             </svg>
             Jus IA
           </div>
 
-          <h2 class="response-title">Resposta</h2>
+          <h2 class="response-title">Ação renovatória e indenização: análise do caso</h2>
 
-          <div class="response-body">
-            <p>Com base na sua consulta, identificamos os principais fundamentos jurídicos aplicáveis ao caso. Abaixo estão os pontos centrais para embasar sua estratégia de defesa:</p>
-            <ol>
-              <li>Cite os <strong>arts. e 491, 506 do Código Penal</strong> para fundamentar a argumentação sobre a excludente de ilicitude e o excesso doloso na conduta imputada ao réu.</li>
-              <li>Solicite a juntada de jurisprudência com base no <strong>Código Penal, art. 23</strong>, destacando a previsão legal com base nos tribunais superiores e a precisão como no Código do Processo Civil.</li>
-              <li>Cite a correspondência do <strong>Superior Tribunal de Justiça (STJ)</strong> para analisar e para referência relevantes aos direitos fundamentais e às restrições contidas em lei.</li>
-              <li>A citação da jurisprudência do Superior Tribunal de Justiça (STJ) parece se orientar aos precedentes sobre liberdade do agente, analisando a sua independência e a estrutura da família do campo.</li>
-            </ol>
+          <!-- Corpo da resposta — preenchido pelo typewriter -->
+          <div class="response-body" id="responseBody">
+            <!-- Conteúdo injetado via JS -->
           </div>
 
-          <!-- Card de fonte -->
-          <div class="source-card">
+          <!-- Card de fonte — aparece após o typewriter -->
+          <div class="source-card" id="sourceCard">
             <svg class="source-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
             </svg>
             <div>
-              <div class="source-card-label">STJ — Agência de Notícias</div>
-              <div class="source-card-text">Recurso Especial n.º 1.234.567/CE — Publicado em 28/06/2017</div>
+              <div class="source-card-label">STJ — Jurisprudência</div>
+              <div class="source-card-text">REsp 1.323.410/MG — Continuidade contratual e <em>accessio temporis</em> na ação renovatória</div>
             </div>
           </div>
 
-          <!-- Barra de ações -->
-          <div class="action-bar">
+          <!-- Barra de ações — aparece após o typewriter -->
+          <div class="action-bar" id="actionBar">
             <button class="btn-action">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
               </svg>
-              10 fontes
+              8 fontes
             </button>
-
             <button class="btn-action">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
               </svg>
               Verificar citações
             </button>
-
             <div class="action-divider" aria-hidden="true"></div>
-
-            <!-- Copiar -->
             <button class="btn-action-icon" aria-label="Copiar resposta">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
               </svg>
             </button>
-
-            <!-- Positivo -->
             <button class="btn-action-icon" aria-label="Resposta útil">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/>
               </svg>
             </button>
-
-            <!-- Negativo -->
             <button class="btn-action-icon" aria-label="Resposta não útil">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/>
               </svg>
             </button>
+          </div>
+
+          <!-- Follow-ups — aparecem após o typewriter -->
+          <div class="followup-section" id="followupSection">
+            <div class="followup-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              Perguntas para aprofundar o caso
+            </div>
+
+            <button class="followup-card" data-followup="0">
+              <span class="followup-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+              </span>
+              <span class="followup-content">
+                <span class="followup-context">Prova de continuidade da posse</span>
+                <span class="followup-question">Durante os 3 meses sem contrato, o seu cliente continuou pagando algum valor ao locador? Se sim, há registro disso em transferência bancária, recibo ou mensagem?</span>
+              </span>
+            </button>
+
+            <button class="followup-card" data-followup="1">
+              <span class="followup-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+              </span>
+              <span class="followup-content">
+                <span class="followup-context">Identidade das partes contratantes</span>
+                <span class="followup-question">Os dois contratos foram firmados com o mesmo locador e para o mesmo CNPJ do seu cliente? Mudança de razão social ou de parte pode complicar o argumento de continuidade.</span>
+              </span>
+            </button>
+
+            <button class="followup-card" data-followup="2">
+              <span class="followup-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+              </span>
+              <span class="followup-content">
+                <span class="followup-context">Benfeitorias e fundo de comércio</span>
+                <span class="followup-question">Seu cliente fez alguma benfeitoria ou adaptação no imóvel ao longo desses 6 anos, como reforma ou instalação elétrica? Isso pode compor o valor da indenização e reforça o vínculo com o ponto.</span>
+              </span>
+            </button>
+
           </div>
 
         </div>
@@ -540,21 +454,12 @@
       <form class="input-card" id="searchForm" autocomplete="off" novalidate>
         <div class="input-label-row">
           <span class="static-placeholder" id="staticPlaceholder">Adicione mais detalhes, faça perguntas sobre o caso, ou peça ao Jus IA para continuar...</span>
-          <textarea
-            class="main-input"
-            id="mainInput"
-            rows="1"
-            aria-label="Continue a conversa"
-            spellcheck="false"
-          ></textarea>
+          <textarea class="main-input" id="mainInput" rows="1" aria-label="Continue a conversa" spellcheck="false"></textarea>
         </div>
-
         <div class="input-actions-row">
           <div class="input-left-actions">
             <button type="button" class="icon-btn" aria-label="Adicionar arquivo">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
             </button>
             <button type="button" class="chip-fundamentada" aria-label="Pesquisa fundamentada">
               <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -563,7 +468,6 @@
               Pesquisa fundamentada
             </button>
           </div>
-
           <div class="input-right-actions">
             <button type="button" class="icon-btn" aria-label="Entrada por voz">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -586,59 +490,197 @@
 </div>
 
 <script>
-  (() => {
-    const STORAGE_KEY = 'jusIA_landingInput';
+(() => {
+  const STORAGE_KEY = 'jusIA_landingInput';
 
-    // ── Balão do usuário ──────────────────────────────────────
-    const saved = localStorage.getItem(STORAGE_KEY) || '';
-    document.getElementById('userBubble').textContent = saved;
+  // ── Balão do usuário ────────────────────────────────────────
+  const saved = localStorage.getItem(STORAGE_KEY) || '';
+  document.getElementById('userBubble').textContent = saved;
 
-    // ── Input ─────────────────────────────────────────────────
-    const input       = document.getElementById('mainInput');
-    const placeholder = document.getElementById('staticPlaceholder');
-    const btnSend     = document.getElementById('btnSend');
-    const form        = document.getElementById('searchForm');
+  // ── Input ───────────────────────────────────────────────────
+  const input       = document.getElementById('mainInput');
+  const placeholder = document.getElementById('staticPlaceholder');
+  const btnSend     = document.getElementById('btnSend');
+  const form        = document.getElementById('searchForm');
 
-    function autoResize() {
-      input.style.height = 'auto';
-      input.style.height = input.scrollHeight + 'px';
-    }
+  function autoResize() {
+    input.style.height = 'auto';
+    input.style.height = input.scrollHeight + 'px';
+  }
 
-    function syncButtons() {
-      const has = input.value.trim().length > 0;
-      btnSend.disabled = !has;
-      btnSend.classList.toggle('active', has);
-      placeholder.style.display = has ? 'none' : '';
-    }
+  function syncButtons() {
+    const has = input.value.trim().length > 0;
+    btnSend.disabled = !has;
+    btnSend.classList.toggle('active', has);
+    placeholder.style.display = has ? 'none' : '';
+  }
 
-    input.addEventListener('input', () => {
-      syncButtons();
-      autoResize();
-    });
+  input.addEventListener('input', () => { syncButtons(); autoResize(); });
 
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        if (input.value.trim()) form.requestSubmit();
-      }
-    });
-
-    // Submit: salva novo prompt e recarrega a página simulando nova resposta
-    form.addEventListener('submit', e => {
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      const val = input.value.trim();
-      if (!val) return;
-      localStorage.setItem(STORAGE_KEY, val);
-      input.value = '';
-      syncButtons();
-      autoResize();
-      document.getElementById('userBubble').textContent = val;
-      // Scroll de volta ao topo para "ver" a nova resposta
-      document.getElementById('messagesArea').scrollTo({ top: 0, behavior: 'smooth' });
-    });
+      if (input.value.trim()) form.requestSubmit();
+    }
+  });
 
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const val = input.value.trim();
+    if (!val) return;
+    localStorage.setItem(STORAGE_KEY, val);
+    document.getElementById('userBubble').textContent = val;
+    input.value = '';
     syncButtons();
-  })();
+    autoResize();
+    document.getElementById('messagesArea').scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  syncButtons();
+
+  // ── Follow-ups → preenche input ao clicar ──────────────────
+  const FOLLOWUP_PROMPTS = [
+    'Durante os 3 meses sem contrato, o meu cliente continuou pagando o aluguel ao locador. Há registros de transferências bancárias. Como isso fortalece o argumento de continuidade para a ação renovatória?',
+    'Os dois contratos foram firmados com o mesmo locador, mas meu cliente mudou de razão social entre o primeiro e o segundo contrato. Isso pode comprometer o requisito de continuidade?',
+    'Meu cliente reformou o espaço no início da locação, instalou ar-condicionado e adaptou a fachada. Esses investimentos podem ser considerados na indenização pelo fundo de comércio?',
+  ];
+
+  document.getElementById('followupSection').addEventListener('click', e => {
+    const card = e.target.closest('[data-followup]');
+    if (!card) return;
+    const prompt = FOLLOWUP_PROMPTS[+card.dataset.followup];
+    input.value = prompt;
+    localStorage.setItem(STORAGE_KEY, prompt);
+    syncButtons();
+    autoResize();
+    input.focus();
+  });
+
+  // ── Conteúdo da resposta do agente ─────────────────────────
+  const RESPONSE_HTML = `
+<p>Olá! Analisando o caso do seu cliente, a resposta é <strong>sim, é possível discutir tanto a ação renovatória quanto o direito a uma indenização</strong>, mas é preciso ter atenção a alguns requisitos e prazos importantes.</p>
+
+<h3>1. Ação Renovatória de Aluguel Comercial</h3>
+
+<p>Para que seu cliente tenha direito à renovação compulsória, a <strong>Lei nº 8.245/91 (Lei do Inquilinato)</strong> exige três requisitos cumulativos:</p>
+
+<ol>
+  <li><strong>Contrato escrito e com prazo determinado.</strong></li>
+  <li><strong>Soma dos prazos com, no mínimo, 5 anos ininterruptos.</strong></li>
+  <li><strong>Exploração da mesma atividade comercial por, no mínimo, 3 anos ininterruptos.</strong></li>
+</ol>
+
+<p>O ponto mais sensível é o <strong>intervalo de 3 meses sem contrato formal</strong>. No entanto, a jurisprudência tem flexibilizado a exigência de "ininterrupção".</p>
+
+<ul>
+  <li><strong>Sobre o intervalo:</strong> O STJ entende que um breve período de interrupção não descaracteriza o requisito temporal. Intervalos de até seis meses não quebram a continuidade necessária para a soma dos prazos (<em>accessio temporis</em>). Como o intervalo foi de apenas três meses, há argumento sólido para defender que o requisito de 5 anos foi cumprido.</li>
+  <li><strong>Prazo para ajuizar:</strong> A ação renovatória deve ser proposta entre <strong>1 ano e 6 meses antes do término do contrato vigente</strong>. Como o contrato vence em julho, o prazo está correndo e é urgente.</li>
+</ul>
+
+<h3>2. A Retomada do Imóvel pelo Locador</h3>
+
+<p>O locador pode se opor à renovação para uso de familiar (cônjuge, ascendente ou descendente), desde que o familiar não vá explorar a mesma atividade do seu cliente.</p>
+
+<ul>
+  <li><strong>Presunção de sinceridade:</strong> A alegação do locador possui presunção de veracidade. Caberá ao seu cliente produzir provas de que a declaração é falsa.</li>
+</ul>
+
+<h3>3. Direito à Indenização pelo Fundo de Comércio</h3>
+
+<p>A indenização é cabível principalmente se a retomada se mostrar <strong>insincera</strong>. Seu cliente poderá ter direito a indenização pelos prejuízos e lucros cessantes se o locador:</p>
+
+<ul>
+  <li><strong>Não der ao imóvel o destino alegado</strong> (uso por familiar).</li>
+  <li><strong>Não iniciar as obras necessárias</strong> no prazo de três meses após a desocupação.</li>
+</ul>
+
+<p>Mesmo que a renovatória não prospere, é possível fiscalizar a destinação do imóvel e ajuizar indenização futura caso o locador não cumpra o declarado.</p>
+
+<h3>Recomendações</h3>
+
+<ol>
+  <li><strong>Agir rápido:</strong> verifique a data exata do fim do contrato e ajuíze a ação renovatória o quanto antes para não perder o prazo legal.</li>
+  <li><strong>Propor a renovatória mesmo assim:</strong> a propositura é o que garante a possibilidade de discutir o direito e pleitear indenização futura.</li>
+  <li><strong>Produzir provas:</strong> documente qualquer indício de falsidade na alegação do locador — anúncio do imóvel para terceiros, por exemplo.</li>
+</ol>
+`.trim();
+
+  // ── Typewriter ──────────────────────────────────────────────
+  const responseBody = document.getElementById('responseBody');
+
+  function typeHTML(container, html, msPerChar, onDone) {
+    container.innerHTML = html;
+
+    // Coleta todos os text nodes
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    let n;
+    while ((n = walker.nextNode())) textNodes.push(n);
+
+    const origTexts = textNodes.map(node => node.textContent);
+    textNodes.forEach(node => { node.textContent = ''; });
+
+    // Adiciona cursor ao último elemento visível
+    const cursor = document.createElement('span');
+    cursor.className = 'tw-cursor';
+    container.appendChild(cursor);
+
+    let ni = 0, ci = 0;
+
+    function tick() {
+      if (ni >= textNodes.length) {
+        cursor.remove();
+        onDone();
+        return;
+      }
+
+      const node = textNodes[ni];
+      const text  = origTexts[ni];
+
+      if (ci < text.length) {
+        node.textContent += text[ci];
+        // Move cursor após o text node atual
+        const parent = node.parentNode;
+        if (parent && cursor.parentNode !== parent) {
+          parent.appendChild(cursor);
+        }
+        ci++;
+        const ch = text[ci] || '';
+        const delay = /\s/.test(ch) ? 2 : msPerChar;
+        setTimeout(tick, delay);
+      } else {
+        ni++;
+        ci = 0;
+        tick();
+      }
+    }
+
+    tick();
+  }
+
+  function revealAfterType() {
+    document.getElementById('sourceCard').classList.add('visible');
+    setTimeout(() => {
+      document.getElementById('actionBar').classList.add('visible');
+      setTimeout(() => {
+        document.getElementById('followupSection').classList.add('visible');
+        // Scroll suave para mostrar os follow-ups
+        setTimeout(() => {
+          document.getElementById('messagesArea').scrollTo({
+            top: document.getElementById('messagesArea').scrollHeight,
+            behavior: 'smooth'
+          });
+        }, 200);
+      }, 300);
+    }, 200);
+  }
+
+  // Inicia typewriter após 1.5s
+  setTimeout(() => {
+    typeHTML(responseBody, RESPONSE_HTML, 8, revealAfterType);
+  }, 1500);
+
+})();
 </script>
 </body>
 </html>
