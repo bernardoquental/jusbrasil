@@ -410,9 +410,153 @@
       .step-title { font-size: 20px; }
       .form-row { flex-direction: column; gap: 16px; }
     }
+
+    /* ── LOADING OVERLAY ────────────────────────────────────── */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--background);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 240ms var(--ease-expressive);
+    }
+
+    .loading-overlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .loading-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .loading-logo svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .loading-text {
+      text-align: center;
+    }
+
+    .loading-text h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--foreground);
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .loading-text p {
+      font-size: 14px;
+      color: var(--muted-foreground);
+      max-width: 340px;
+      line-height: 1.6;
+    }
+
+    .loading-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .loading-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      opacity: 0.3;
+      animation: pulse-dot 1.2s ease-in-out infinite;
+    }
+
+    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50%       { opacity: 1;   transform: scale(1.25); }
+    }
+
+    .loading-items {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 260px;
+    }
+
+    .loading-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted-foreground);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 320ms var(--ease-expressive),
+                  transform 320ms var(--ease-expressive),
+                  color 320ms var(--ease-expressive);
+    }
+
+    .loading-item.done {
+      opacity: 1;
+      transform: translateY(0);
+      color: var(--foreground);
+    }
+
+    .loading-item svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: var(--primary);
+    }
   </style>
 </head>
 <body>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loadingOverlay" aria-live="polite" aria-label="Personalizando o Jus IA">
+  <div class="loading-logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+    Jus IA
+  </div>
+
+  <div class="loading-text">
+    <h2>Personalizando para você</h2>
+    <p>Estamos configurando o Jus IA com base no seu perfil jurídico.</p>
+  </div>
+
+  <div class="loading-dots">
+    <span></span><span></span><span></span>
+  </div>
+
+  <div class="loading-items">
+    <div class="loading-item" id="li-1">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Analisando suas áreas de atuação
+    </div>
+    <div class="loading-item" id="li-2">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Calibrando as fontes jurídicas relevantes
+    </div>
+    <div class="loading-item" id="li-3">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Ajustando o estilo das respostas
+    </div>
+  </div>
+</div>
 
 <!-- Barra de progresso -->
 <div class="progress-track" aria-hidden="true">
@@ -852,16 +996,34 @@
       }
     }
 
+    // ── Loading e redirecionamento ────────────────────────────
+    function showLoadingAndRedirect() {
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('visible');
+      progressFill.style.width = '100%';
+
+      const items = ['li-1', 'li-2', 'li-3'];
+      items.forEach((id, i) => {
+        setTimeout(() => {
+          document.getElementById(id).classList.add('done');
+        }, 500 + i * 600);
+      });
+
+      setTimeout(() => {
+        window.location.href = 'home.html';
+      }, 5000);
+    }
+
     // ── Botao Continuar (step 5) ──────────────────────────────
     document.getElementById('btn-5').addEventListener('click', () => {
       saveOab();
-      window.location.href = 'home.html';
+      showLoadingAndRedirect();
     });
 
     // ── Pular OAB ─────────────────────────────────────────────
     skipOab.addEventListener('click', e => {
       e.preventDefault();
-      window.location.href = 'home.html';
+      showLoadingAndRedirect();
     });
 
     // ── Fechar (X) ────────────────────────────────────────────

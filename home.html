@@ -333,6 +333,275 @@
       transition: max-height 300ms var(--ease-productive);
     }
 
+    /* ── MODAL OVERLAY ─────────────────────────────────────── */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.32);
+      backdrop-filter: blur(2px);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms var(--ease-productive);
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-3);
+      width: 100%;
+      max-width: 400px;
+      margin: 16px;
+      transform: translateY(8px) scale(0.98);
+      transition: transform 200ms var(--ease-productive);
+    }
+
+    .modal-backdrop.open .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+
+    .modal-close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--muted-foreground);
+      cursor: pointer;
+      transition: background 160ms var(--ease-productive), color 160ms var(--ease-productive);
+    }
+
+    .modal-close:hover { background: var(--muted); color: var(--foreground); }
+    .modal-close svg { width: 16px; height: 16px; }
+
+    .modal-body {
+      padding: 0 20px;
+    }
+
+    .modal-section {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-section:last-child { border-bottom: none; }
+
+    .modal-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--foreground);
+      margin-bottom: 4px;
+    }
+
+    .modal-section-desc {
+      font-size: 12px;
+      color: var(--muted-foreground);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    /* Tribunais — busca */
+    .tribunal-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 36px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--background);
+      margin-bottom: 10px;
+    }
+
+    .tribunal-search svg { width: 14px; height: 14px; color: var(--muted-foreground); flex-shrink: 0; }
+
+    .tribunal-search input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--foreground);
+      background: transparent;
+    }
+
+    .tribunal-search input::placeholder { color: var(--muted-foreground); }
+
+    /* Tribunais — opção todos */
+    .tribunal-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--foreground);
+    }
+
+    .tribunal-option-chevron {
+      width: 14px;
+      height: 14px;
+      color: var(--muted-foreground);
+    }
+
+    /* Checkbox customizado */
+    .check-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--foreground);
+      user-select: none;
+    }
+
+    .check-option input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--card-border);
+      border-radius: 4px;
+      background: var(--background);
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      transition: background 160ms, border-color 160ms;
+    }
+
+    .check-option input[type="checkbox"]:checked {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .check-option input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 5px;
+      width: 4px;
+      height: 7px;
+      border: 1.5px solid #fff;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+    }
+
+    /* Toggle switch */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .toggle-label {
+      font-size: 13px;
+      color: var(--foreground);
+    }
+
+    .toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      background: var(--border);
+      cursor: pointer;
+      transition: background 200ms;
+    }
+
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: var(--shadow-1);
+      transition: transform 200ms var(--ease-productive);
+    }
+
+    .toggle input:checked + .toggle-track { background: var(--primary); }
+    .toggle input:checked + .toggle-track::after { transform: translateX(16px); }
+
+    /* Modal footer */
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-modal-cancel {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--background);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--foreground);
+      cursor: pointer;
+      transition: background 160ms var(--ease-productive);
+    }
+
+    .btn-modal-cancel:hover { background: var(--muted); }
+
+    .btn-modal-save {
+      height: 36px;
+      padding: 0 16px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary-foreground);
+      cursor: pointer;
+      transition: background 160ms var(--ease-productive);
+    }
+
+    .btn-modal-save:hover { background: var(--primary-3); }
+
     /* ── ANIMAÇÃO ──────────────────────────────────────────── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(10px); }
@@ -410,6 +679,14 @@
               </svg>
               Pesquisa fundamentada
             </button>
+            <button type="button" class="icon-btn" id="btnParams" aria-label="Parâmetros de resposta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="17" y2="18"/>
+                <circle cx="17" cy="6" r="2.5" fill="var(--background)"/>
+                <circle cx="11" cy="12" r="2.5" fill="var(--background)"/>
+                <circle cx="14" cy="18" r="2.5" fill="var(--background)"/>
+              </svg>
+            </button>
           </div>
 
           <div class="input-right-actions">
@@ -437,21 +714,21 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
           </svg>
-          Analise os autos e mapeie teses de defesa no TJCE
+          Busque jurisprudência trabalhista no TRT-7 para esse caso
         </button>
 
         <button class="suggestion-item" data-idx="1">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
           </svg>
-          Me ajude a redigir um habeas corpus ou contestação
+          Analise cláusulas abusivas neste contrato bancário
         </button>
 
         <button class="suggestion-item" data-idx="2">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
           </svg>
-          Encontre precedentes do TJCE para esse caso
+          Revise este contrato de compra e venda de imóvel
         </button>
 
         <!-- Toggle -->
@@ -467,27 +744,94 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
             </svg>
-            Analise a viabilidade de impetrar habeas corpus
+            Elabore reclamação trabalhista com base nesses fatos
           </button>
 
           <button class="suggestion-item" data-idx="4">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
             </svg>
-            Resuma este documento e aponte riscos para a defesa
+            Mapeie precedentes sobre cobrança indevida bancária no CE
           </button>
 
           <button class="suggestion-item" data-idx="5" style="border-bottom: none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
             </svg>
-            Elabore estratégia de defesa criminal para o caso
+            Pesquise regularidade de usucapião ou incorporação imobiliária
           </button>
         </div>
 
       </div>
     </div>
   </main>
+</div>
+
+<!-- ── MODAL PARÂMETROS ───────────────────────────────────── -->
+<div class="modal-backdrop" id="paramsModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Preferências de resposta</span>
+      <button class="modal-close" id="modalClose" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Tribunais prioritários -->
+      <div class="modal-section">
+        <div class="modal-section-title">Tribunais prioritários</div>
+        <div class="modal-section-desc">Escolha tribunais que o Jus IA deve priorizar nas respostas</div>
+        <div class="tribunal-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" placeholder="Ex.: STF" id="tribunalSearch" autocomplete="off" />
+        </div>
+        <label class="tribunal-option">
+          <svg class="tribunal-option-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          <input type="checkbox" id="chkTodos" checked style="appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1.5px solid var(--card-border);border-radius:4px;background:var(--background);cursor:pointer;flex-shrink:0;position:relative;transition:background 160ms,border-color 160ms;" />
+          <span>Todos (27)</span>
+        </label>
+      </div>
+
+      <!-- Fontes jurídicas -->
+      <div class="modal-section">
+        <div class="modal-section-title">Fontes jurídicas</div>
+        <div class="modal-section-desc">Quais fontes o Jus IA deve priorizar</div>
+        <label class="check-option">
+          <input type="checkbox" id="chkJurisp" checked />
+          Jurisprudência
+        </label>
+        <label class="check-option">
+          <input type="checkbox" id="chkLeg" />
+          Legislação
+        </label>
+        <label class="check-option">
+          <input type="checkbox" id="chkDout" />
+          Doutrina
+        </label>
+      </div>
+
+      <!-- Personalização automática -->
+      <div class="modal-section">
+        <div class="modal-section-title">Personalização automática</div>
+        <div class="modal-section-desc">Permitir que o Jus IA adapte respostas com base no seu uso</div>
+        <div class="toggle-row">
+          <span class="toggle-label">Ativar personalização contínua</span>
+          <label class="toggle">
+            <input type="checkbox" id="chkPersonalizacao" checked />
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-modal-cancel" id="modalCancel">Cancelar</button>
+      <button type="button" class="btn-modal-save" id="modalSave">Salvar preferências</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -541,12 +885,12 @@
 
     // ── Prompts completos ─────────────────────────────────────
     const PROMPTS = [
-      'Analise os autos desse processo e mapeie as principais teses de defesa aplicáveis, com foco na jurisprudência criminal e cível do TJCE e dos tribunais superiores.',
-      'Me ajude a construir uma peça jurídica. Preciso de [habeas corpus / contestação / memoriais] referente ao seguinte caso: [descreva os fatos e a acusação].',
-      'Busque precedentes do TJCE e dos tribunais superiores aplicáveis ao seguinte caso: [descreva os fatos, a acusação e as teses que pretendo sustentar].',
-      'Analise a viabilidade de impetrar habeas corpus em favor do meu cliente. Situação: [descreva a prisão ou constrangimento ilegal, com data, autoridade coatora e fundamentos].',
-      'Resuma os pontos principais deste documento jurídico e destaque os aspectos mais relevantes para a defesa, incluindo nulidades, prazos e riscos processuais.',
-      'Elabore uma estratégia de defesa para o seguinte caso criminal: [descreva os fatos, a acusação, as provas disponíveis e o histórico processual]. Considere teses doutrinárias e jurisprudenciais aplicáveis.',
+      'Busque jurisprudência trabalhista no TRT-7 (7ª Região — Ceará) aplicável ao seguinte caso: [descreva a situação do trabalhador, o pedido e os fatos relevantes]. Considere precedentes do TST alinhados à orientação do TRT-7.',
+      'Analise as cláusulas deste contrato bancário e identifique abusividades, juros acima do limite legal, cobranças indevidas e práticas vedadas pelo CDC e pelo BACEN. Destaque os pontos mais favoráveis ao cliente.',
+      'Revise este contrato de compra e venda de imóvel. Aponte cláusulas leoninas, irregularidades registrais, riscos para o comprador e sugira alterações para proteger os interesses do meu cliente.',
+      'Elabore uma reclamação trabalhista com base nos seguintes fatos: [descreva a relação de trabalho, os direitos violados e os pedidos]. Inclua fundamentos legais e jurisprudência do TRT-7 e TST.',
+      'Mapeie precedentes sobre cobrança indevida ou práticas abusivas de instituições financeiras no Ceará. Caso: [descreva o produto financeiro, os valores cobrados e a situação do cliente].',
+      'Pesquise a viabilidade jurídica de usucapião ou regularização de incorporação imobiliária para o seguinte imóvel: [descreva a localização, o tempo de posse, a situação registral e as partes envolvidas].',
     ];
 
     document.getElementById('suggestions').addEventListener('click', e => {
@@ -575,6 +919,48 @@
       chevron.style.transform   = expanded ? 'rotate(180deg)' : '';
       toggleLabel.textContent   = expanded ? 'Mostrar menos' : 'Mostrar mais sugestões';
     });
+
+    // ── Modal parâmetros ──────────────────────────────────────
+    const modal      = document.getElementById('paramsModal');
+    const btnParams  = document.getElementById('btnParams');
+    const modalClose = document.getElementById('modalClose');
+    const modalCancel= document.getElementById('modalCancel');
+    const modalSave  = document.getElementById('modalSave');
+    const chkTodos   = document.getElementById('chkTodos');
+
+    // estilo checked do checkbox manual (chkTodos usa inline style)
+    function syncTodosStyle() {
+      if (chkTodos.checked) {
+        chkTodos.style.background = 'var(--primary)';
+        chkTodos.style.borderColor = 'var(--primary)';
+      } else {
+        chkTodos.style.background = 'var(--background)';
+        chkTodos.style.borderColor = 'var(--card-border)';
+      }
+    }
+    chkTodos.addEventListener('change', syncTodosStyle);
+    syncTodosStyle();
+
+    function openModal()  { modal.classList.add('open'); }
+    function closeModal() { modal.classList.remove('open'); }
+
+    btnParams.addEventListener('click', openModal);
+    modalClose.addEventListener('click', closeModal);
+    modalCancel.addEventListener('click', closeModal);
+    modalSave.addEventListener('click', () => {
+      // persiste preferências
+      const prefs = {
+        jurisp:    document.getElementById('chkJurisp').checked,
+        leg:       document.getElementById('chkLeg').checked,
+        dout:      document.getElementById('chkDout').checked,
+        personalizacao: document.getElementById('chkPersonalizacao').checked,
+      };
+      localStorage.setItem('jusIA_prefs', JSON.stringify(prefs));
+      closeModal();
+    });
+
+    // fecha ao clicar fora
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 
     // ── Init ──────────────────────────────────────────────────
     const saved = localStorage.getItem(STORAGE_KEY) || '';
