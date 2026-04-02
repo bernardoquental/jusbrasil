@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jus IA — Resposta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Farol DS tokens ──────────────────────────────────── */
+    :root {
+      --background:        #FFFFFF;
+      --foreground:        #0F172A;
+      --primary:           #007A5F;
+      --primary-foreground:#FFFFFF;
+      --primary-3:         #00664F;
+      --primary-1:         #E6F4F0;
+      --muted:             #F1F5F9;
+      --muted-foreground:  #5C6F8A;
+      --border:            #E2E8F0;
+      --card-border:       #CCD5E1;
+
+      --shadow-1: 0px 2px 4px 0px rgba(25,52,102,0.04);
+      --shadow-2: 0px 2px 8px 0px rgba(25,52,102,0.08);
+      --shadow-3: 0px 4px 24px 0px rgba(25,52,102,0.08);
+
+      --ease-productive: cubic-bezier(0,0,0.3,1);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    /* ── LAYOUT ────────────────────────────────────────────── */
+    .app {
+      display: flex;
+      height: 100%;
+    }
+
+    /* ── SIDEBAR (idêntica à home) ─────────────────────────── */
+    .sidebar {
+      width: 56px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 0;
+    }
+
+    .sidebar-top {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .sidebar-bottom { margin-top: auto; }
+
+    .sidebar-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--muted-foreground);
+      cursor: pointer;
+      transition: background 160ms var(--ease-productive),
+                  color 160ms var(--ease-productive);
+    }
+
+    .sidebar-btn:hover { background: var(--muted); color: var(--foreground); }
+    .sidebar-btn svg { width: 20px; height: 20px; }
+
+    /* ── CHAT MAIN ─────────────────────────────────────────── */
+    .chat-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── MESSAGES AREA (scrollável) ────────────────────────── */
+    .messages-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 40px 0 180px;  /* padding-bottom para o input fixo */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .messages-inner {
+      width: 100%;
+      max-width: 680px;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* ── BALÃO DO USUÁRIO ──────────────────────────────────── */
+    .user-bubble {
+      align-self: flex-end;
+      max-width: 85%;
+      background: var(--muted);
+      border-radius: 18px 18px 4px 18px;
+      padding: 14px 18px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--foreground);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* ── RESPOSTA DO AGENTE ────────────────────────────────── */
+    .agent-response {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Logo pequeno + label "Jus IA" */
+    .agent-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted-foreground);
+    }
+
+    .agent-label svg { width: 18px; height: 18px; }
+
+    /* Título da resposta */
+    .response-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--foreground);
+      letter-spacing: -0.2px;
+    }
+
+    /* Corpo da resposta */
+    .response-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--foreground);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .response-body p { margin: 0; }
+
+    .response-body ol {
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .response-body li { line-height: 1.7; }
+
+    /* ── CARD DE FONTE ─────────────────────────────────────── */
+    .source-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--primary);
+      background: var(--primary-1);
+      font-size: 13px;
+      color: var(--foreground);
+      line-height: 1.4;
+    }
+
+    .source-card-icon {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      color: var(--primary);
+    }
+
+    .source-card-label {
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 2px;
+    }
+
+    .source-card-text { color: var(--muted-foreground); }
+
+    /* ── BARRA DE AÇÕES ────────────────────────────────────── */
+    .action-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 34px;
+      padding: 0 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--background);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--foreground);
+      cursor: pointer;
+      transition: background 160ms var(--ease-productive),
+                  border-color 160ms var(--ease-productive);
+      white-space: nowrap;
+    }
+
+    .btn-action:hover { background: var(--muted); border-color: var(--card-border); }
+    .btn-action svg { width: 15px; height: 15px; color: var(--muted-foreground); }
+
+    .btn-action-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--background);
+      color: var(--muted-foreground);
+      cursor: pointer;
+      transition: background 160ms var(--ease-productive),
+                  color 160ms var(--ease-productive);
+      flex-shrink: 0;
+    }
+
+    .btn-action-icon:hover { background: var(--muted); color: var(--foreground); }
+    .btn-action-icon svg { width: 15px; height: 15px; }
+
+    .action-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 2px;
+    }
+
+    /* ── INPUT DOCK (fixo no fundo) ─────────────────────────── */
+    .input-dock {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 24px 24px;
+      background: linear-gradient(to bottom, transparent, var(--background) 40%);
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ── INPUT CARD (mesmo da home) ────────────────────────── */
+    .input-card {
+      width: 100%;
+      max-width: 680px;
+      background: var(--background);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-3);
+      transition: box-shadow 160ms var(--ease-productive);
+    }
+
+    .input-card:focus-within { box-shadow: var(--shadow-3); }
+
+    .input-label-row {
+      position: relative;
+      padding: 16px 16px 8px;
+    }
+
+    .static-placeholder {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      pointer-events: none;
+      color: var(--muted-foreground);
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .main-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--foreground);
+      background: transparent;
+      resize: none;
+      min-height: 22px;
+      max-height: 160px;
+      overflow-y: auto;
+      caret-color: var(--primary);
+      display: block;
+    }
+
+    .main-input::placeholder { color: transparent; }
+
+    .input-actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px 16px;
+      gap: 8px;
+    }
+
+    .input-left-actions,
+    .input-right-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border);
+      background: var(--background);
+      box-shadow: var(--shadow-1);
+      color: var(--foreground);
+      cursor: pointer;
+      transition: background 160ms var(--ease-productive);
+      flex-shrink: 0;
+    }
+
+    .icon-btn:hover { background: var(--muted); }
+    .icon-btn svg { width: 20px; height: 20px; }
+
+    .chip-fundamentada {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border);
+      background: var(--background);
+      box-shadow: var(--shadow-1);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #2B3950;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background 160ms var(--ease-productive);
+    }
+
+    .chip-fundamentada:hover { background: var(--muted); }
+    .chip-fundamentada svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .btn-send {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--muted);
+      background: var(--muted);
+      color: var(--muted-foreground);
+      cursor: not-allowed;
+      transition: background 160ms var(--ease-productive),
+                  border-color 160ms var(--ease-productive),
+                  color 160ms var(--ease-productive),
+                  transform 80ms var(--ease-productive);
+      flex-shrink: 0;
+    }
+
+    .btn-send svg { width: 18px; height: 18px; }
+
+    .btn-send.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--primary-foreground);
+      cursor: pointer;
+    }
+
+    .btn-send.active:hover { background: var(--primary-3); border-color: var(--primary-3); }
+    .btn-send.active:active { transform: scale(0.92); }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── SIDEBAR ─────────────────────────────────────────── -->
+  <aside class="sidebar" aria-label="Navegação lateral">
+    <div class="sidebar-top">
+      <button class="sidebar-btn" aria-label="Alternar barra lateral">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>
+        </svg>
+      </button>
+      <button class="sidebar-btn" aria-label="Nova conversa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+      </button>
+      <button class="sidebar-btn" aria-label="Buscar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+    </div>
+    <div class="sidebar-bottom">
+      <button class="sidebar-btn" aria-label="Perfil">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── CHAT MAIN ───────────────────────────────────────── -->
+  <div class="chat-main">
+
+    <!-- Área de mensagens scrollável -->
+    <div class="messages-area" id="messagesArea">
+      <div class="messages-inner">
+
+        <!-- Balão do usuário -->
+        <div class="user-bubble" id="userBubble"></div>
+
+        <!-- Resposta do agente -->
+        <div class="agent-response">
+
+          <div class="agent-label">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 32" fill="none" aria-hidden="true">
+              <path fill-rule="evenodd" clip-rule="evenodd" fill="#FC0"     d="M26.098 0H12.663c-.508 0-.944.374-1.032.883l-.36 2.09s-.004.016-.004.023L8.768 17.52h5.734c.39 0 .746.216.93.565l6.428 12.342s.077.152.102.272c.016.079.023.134.028.178v.162a1 1 0 0 1-.014.1q.006-.02.01-.04l4.788-27.732.366-2.112A1.067 1.067 0 0 0 26.098 0"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" fill="#3D82DA"  d="M6.478 31.181v-.004q-.007-.044-.011-.093v-.016c0-.027-.005-.057-.005-.085v-.03q0-.036.003-.074.001-.026.006-.053.002-.027.007-.055.01-.055.02-.113L8.767 17.52H1.049c-.792.002-1.298.862-.924 1.573l6.428 12.342.01.016a1 1 0 0 1-.085-.27"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" fill="#77B340"  d="M21.99 31.038c-.041.584-.58.969-1.026.962H7.536c-.175 0-.356-.046-.356-.046-.557-.152-.82-.676-.681-1.296L8.766 17.52H14.5c.39 0 .747.216.931.565l6.428 12.342s.077.152.102.272.03.19.03.24z"/>
+            </svg>
+            Jus IA
+          </div>
+
+          <h2 class="response-title">Resposta</h2>
+
+          <div class="response-body">
+            <p>Com base na sua consulta, identificamos os principais fundamentos jurídicos aplicáveis ao caso. Abaixo estão os pontos centrais para embasar sua estratégia de defesa:</p>
+            <ol>
+              <li>Cite os <strong>arts. e 491, 506 do Código Penal</strong> para fundamentar a argumentação sobre a excludente de ilicitude e o excesso doloso na conduta imputada ao réu.</li>
+              <li>Solicite a juntada de jurisprudência com base no <strong>Código Penal, art. 23</strong>, destacando a previsão legal com base nos tribunais superiores e a precisão como no Código do Processo Civil.</li>
+              <li>Cite a correspondência do <strong>Superior Tribunal de Justiça (STJ)</strong> para analisar e para referência relevantes aos direitos fundamentais e às restrições contidas em lei.</li>
+              <li>A citação da jurisprudência do Superior Tribunal de Justiça (STJ) parece se orientar aos precedentes sobre liberdade do agente, analisando a sua independência e a estrutura da família do campo.</li>
+            </ol>
+          </div>
+
+          <!-- Card de fonte -->
+          <div class="source-card">
+            <svg class="source-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+            </svg>
+            <div>
+              <div class="source-card-label">STJ — Agência de Notícias</div>
+              <div class="source-card-text">Recurso Especial n.º 1.234.567/CE — Publicado em 28/06/2017</div>
+            </div>
+          </div>
+
+          <!-- Barra de ações -->
+          <div class="action-bar">
+            <button class="btn-action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+              </svg>
+              10 fontes
+            </button>
+
+            <button class="btn-action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
+              Verificar citações
+            </button>
+
+            <div class="action-divider" aria-hidden="true"></div>
+
+            <!-- Copiar -->
+            <button class="btn-action-icon" aria-label="Copiar resposta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+              </svg>
+            </button>
+
+            <!-- Positivo -->
+            <button class="btn-action-icon" aria-label="Resposta útil">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/>
+              </svg>
+            </button>
+
+            <!-- Negativo -->
+            <button class="btn-action-icon" aria-label="Resposta não útil">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Input fixo no fundo -->
+    <div class="input-dock">
+      <form class="input-card" id="searchForm" autocomplete="off" novalidate>
+        <div class="input-label-row">
+          <span class="static-placeholder" id="staticPlaceholder">Adicione mais detalhes, faça perguntas sobre o caso, ou peça ao Jus IA para continuar...</span>
+          <textarea
+            class="main-input"
+            id="mainInput"
+            rows="1"
+            aria-label="Continue a conversa"
+            spellcheck="false"
+          ></textarea>
+        </div>
+
+        <div class="input-actions-row">
+          <div class="input-left-actions">
+            <button type="button" class="icon-btn" aria-label="Adicionar arquivo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </button>
+            <button type="button" class="chip-fundamentada" aria-label="Pesquisa fundamentada">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="8.5" cy="8.5" r="5"/><path d="m14 14 2.5 2.5"/><path d="M8.5 6v5M6 8.5h5"/>
+              </svg>
+              Pesquisa fundamentada
+            </button>
+          </div>
+
+          <div class="input-right-actions">
+            <button type="button" class="icon-btn" aria-label="Entrada por voz">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" x2="12" y1="19" y2="22"/>
+              </svg>
+            </button>
+            <button type="submit" class="btn-send" id="btnSend" disabled aria-label="Enviar mensagem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 19V5M5 12l7-7 7 7"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  (() => {
+    const STORAGE_KEY = 'jusIA_landingInput';
+
+    // ── Balão do usuário ──────────────────────────────────────
+    const saved = localStorage.getItem(STORAGE_KEY) || '';
+    document.getElementById('userBubble').textContent = saved;
+
+    // ── Input ─────────────────────────────────────────────────
+    const input       = document.getElementById('mainInput');
+    const placeholder = document.getElementById('staticPlaceholder');
+    const btnSend     = document.getElementById('btnSend');
+    const form        = document.getElementById('searchForm');
+
+    function autoResize() {
+      input.style.height = 'auto';
+      input.style.height = input.scrollHeight + 'px';
+    }
+
+    function syncButtons() {
+      const has = input.value.trim().length > 0;
+      btnSend.disabled = !has;
+      btnSend.classList.toggle('active', has);
+      placeholder.style.display = has ? 'none' : '';
+    }
+
+    input.addEventListener('input', () => {
+      syncButtons();
+      autoResize();
+    });
+
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (input.value.trim()) form.requestSubmit();
+      }
+    });
+
+    // Submit: salva novo prompt e recarrega a página simulando nova resposta
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const val = input.value.trim();
+      if (!val) return;
+      localStorage.setItem(STORAGE_KEY, val);
+      input.value = '';
+      syncButtons();
+      autoResize();
+      document.getElementById('userBubble').textContent = val;
+      // Scroll de volta ao topo para "ver" a nova resposta
+      document.getElementById('messagesArea').scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    syncButtons();
+  })();
+</script>
+</body>
+</html>

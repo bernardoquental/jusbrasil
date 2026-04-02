@@ -165,7 +165,10 @@
       background: transparent;
       resize: none;
       min-height: 22px;
+      max-height: 200px;
+      overflow-y: auto;
       caret-color: var(--primary);
+      display: block;
     }
 
     .main-input::placeholder { color: transparent; }
@@ -385,13 +388,13 @@
       <form class="input-card" id="searchForm" autocomplete="off" novalidate>
         <div class="input-label-row">
           <span class="static-placeholder" id="staticPlaceholder">Insira documentos jurídicos, faça perguntas sobre casos, ou continue de onde parou...</span>
-          <input
+          <textarea
             class="main-input"
             id="mainInput"
-            type="text"
+            rows="1"
             aria-label="Faça uma pergunta ao Jus IA"
             spellcheck="false"
-          />
+          ></textarea>
         </div>
 
         <div class="input-actions-row">
@@ -494,7 +497,7 @@
     // ── Greeting ─────────────────────────────────────────────
     const hour = new Date().getHours();
     const salutation = hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite';
-    const name = localStorage.getItem('jusIA_userName') || 'Jheyssa';
+    const name = localStorage.getItem('jusIA_userName') || 'Ana Paula';
     document.getElementById('greeting').textContent = salutation + ', ' + name;
 
     // ── Input ─────────────────────────────────────────────────
@@ -502,6 +505,11 @@
     const placeholder = document.getElementById('staticPlaceholder');
     const btnSend     = document.getElementById('btnSend');
     const form        = document.getElementById('searchForm');
+
+    function autoResize() {
+      input.style.height = 'auto';
+      input.style.height = input.scrollHeight + 'px';
+    }
 
     function syncButtons() {
       const has = input.value.trim().length > 0;
@@ -513,9 +521,23 @@
     input.addEventListener('input', () => {
       localStorage.setItem(STORAGE_KEY, input.value);
       syncButtons();
+      autoResize();
     });
 
-    form.addEventListener('submit', e => { e.preventDefault(); });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (input.value.trim()) form.requestSubmit();
+      }
+    });
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const val = input.value.trim();
+      if (!val) return;
+      localStorage.setItem(STORAGE_KEY, val);
+      window.location.href = 'resposta.html';
+    });
 
     // ── Prompts completos ─────────────────────────────────────
     const PROMPTS = [
@@ -534,6 +556,7 @@
       input.value = prompt;
       localStorage.setItem(STORAGE_KEY, prompt);
       syncButtons();
+      autoResize();
       input.focus();
     });
 
@@ -557,6 +580,7 @@
     const saved = localStorage.getItem(STORAGE_KEY) || '';
     if (saved) { input.value = saved; }
     syncButtons();
+    autoResize();
   })();
 </script>
 </body>
